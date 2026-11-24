@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/thisWeekFragment">
+
+    <fragment
+        android:id="@+id/thisWeekFragment"
+        android:name="com.shema.campuspulse.ui.ThisWeekFragment"
+        android:label="This Week" />
+    <fragment
+        android:id="@+id/eventsFragment"
+        android:name="com.shema.campuspulse.ui.EventsFragment"
+        android:label="Events" />
+    <fragment
+        android:id="@+id/myWeekFragment"
+        android:name="com.shema.campuspulse.ui.MyWeekFragment"
+        android:label="My Week" />
+    <fragment
+        android:id="@+id/sportsFragment"
+        android:name="com.shema.campuspulse.ui.SportsFragment"
+        android:label="Sports" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.shema.campuspulse.ui.ProfileFragment"
+        android:label="Profile" />
+</navigation>

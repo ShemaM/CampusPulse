@@ -1,0 +1,126 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Sign In | CampusPulse</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#001026',
+                        'primary-container': '#0b2545',
+                        secondary: '#3b608c',
+                        background: '#f8f9ff',
+                        'surface-low': '#eff4ff',
+                        'on-surface': '#0b1c30',
+                        'on-surface-variant': '#44474e'
+                    },
+                    fontFamily: {
+                        body: ['Inter', 'sans-serif'],
+                        heading: ['Plus Jakarta Sans', 'sans-serif']
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        body{background:#f4f6fa}.signin-shell{display:grid;min-height:100vh;grid-template-columns:minmax(0,1.08fr) minmax(420px,.92fr)}
+        .signin-story{position:relative;display:flex;min-height:100vh;flex-direction:column;justify-content:space-between;overflow:hidden;background:radial-gradient(ellipse at 80% 20%,rgba(73,118,166,.38),transparent 35%),linear-gradient(145deg,#071c35,#0b2b4e 62%,#16416d);padding:clamp(36px,6vw,84px);color:white}
+        .story-orbit{position:absolute;right:-15%;top:12%;height:min(60vw,650px);width:min(60vw,650px);border:1px solid rgba(255,255,255,.09);border-radius:50%;pointer-events:none}.story-orbit:before,.story-orbit:after{position:absolute;inset:9%;border:1px solid rgba(255,255,255,.07);border-radius:50%;content:""}.story-orbit:after{inset:20%}
+        .signin-brand{position:relative;z-index:1;display:flex;align-items:center;gap:12px}.brand-mark{display:grid;height:44px;width:44px;place-items:center;border:1px solid rgba(255,255,255,.2);border-radius:14px;background:rgba(255,255,255,.1);color:#f3d27b;font-weight:800}
+        .story-copy{position:relative;z-index:1;max-width:620px;margin:auto 0;padding:72px 0}.story-label{display:inline-flex;align-items:center;gap:9px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(255,255,255,.07);padding:8px 12px;color:#f5dda0;font-size:10px;font-weight:800;letter-spacing:.13em}.story-copy h1{margin-top:24px;font-size:clamp(38px,5.2vw,68px);line-height:1.04;letter-spacing:-.055em}.story-copy h1 span{color:#efcd72}.story-copy>p{max-width:470px;margin-top:22px;color:#c5d5e8;font-size:16px;line-height:1.75}
+        .story-highlights{display:grid;max-width:550px;grid-template-columns:1fr 1fr;gap:12px;margin-top:38px}.highlight-card{border:1px solid rgba(255,255,255,.12);border-radius:16px;background:rgba(255,255,255,.07);padding:16px}.highlight-card strong{display:block;color:#fff;font-size:14px}.highlight-card span{display:block;margin-top:5px;color:#bdcde0;font-size:11px;line-height:1.5}
+        .story-foot{position:relative;z-index:1;color:#9db2ca;font-size:11px}.signin-panel{display:flex;min-height:100vh;align-items:center;justify-content:center;padding:42px clamp(24px,6vw,88px)}.signin-content{width:100%;max-width:440px}.signin-mobile-brand{display:none}.signin-kicker{color:#a47b1a;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.signin-content h2{margin-top:10px;font-size:32px;letter-spacing:-.04em}.signin-subtitle{margin-top:9px;color:#63738a;font-size:14px;line-height:1.65}.signin-form{margin-top:30px}.signin-form label{display:block;margin-bottom:8px;color:#1b2c43;font-size:13px;font-weight:700}.signin-form input{min-height:49px;border-radius:12px!important}.signin-submit{min-height:50px;border-radius:12px!important;background:#0b2545!important;box-shadow:0 9px 20px rgba(11,37,69,.15)}.signin-submit:hover{background:#153c65!important;transform:translateY(-1px)}
+        @media(max-width:850px){.signin-shell{grid-template-columns:1fr}.signin-story{display:none}.signin-panel{min-height:100vh;padding:32px 22px}.signin-mobile-brand{display:flex;margin-bottom:42px}.signin-panel-inner{width:100%;max-width:440px}.signin-content h2{font-size:30px}}
+        @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important}}
+    </style>
+</head>
+<body class="min-h-screen bg-background font-body text-on-surface antialiased">
+    <main class="signin-shell">
+        <section class="signin-story" aria-label="CampusPulse introduction">
+            <div class="story-orbit"></div>
+            <a href="/" class="signin-brand" aria-label="CampusPulse home"><span class="brand-mark">CP</span><span><strong class="block font-heading text-base">CampusPulse</strong><small class="mt-0.5 block text-xs text-blue-100">USIU-Africa · Campus life, connected</small></span></a>
+            <div class="story-copy">
+                <span class="story-label"><span class="h-2 w-2 rounded-full bg-emerald-300"></span> YOUR CAMPUS, IN RHYTHM</span>
+                <h1 class="font-heading font-extrabold">Make every<br>campus moment <span>count.</span></h1>
+                <p>One place to bring students, events, and the energy of campus life together. Welcome back to your administration workspace.</p>
+                <div class="story-highlights"><div class="highlight-card"><strong>Events that connect</strong><span>Discover and manage what’s happening across campus.</span></div><div class="highlight-card"><strong>A campus in sync</strong><span>Keep registrations, people, and schedules together.</span></div></div>
+            </div>
+            <p class="story-foot">A more connected campus starts here.</p>
+        </section>
+        <section class="signin-panel">
+          <div class="signin-panel-inner">
+            <a href="/" class="signin-brand signin-mobile-brand" aria-label="CampusPulse home"><span class="brand-mark" style="background:#0b2545;color:#f3d27b">CP</span><span><strong class="block font-heading text-base text-slate-900">CampusPulse</strong><small class="mt-0.5 block text-xs text-slate-500">USIU-Africa · Campus life, connected</small></span></a>
+            <div class="signin-content">
+                <p class="signin-kicker">Administration portal</p>
+                <h2 class="font-heading font-extrabold">Welcome back</h2>
+                <p class="signin-subtitle">Sign in to manage campus events, registrations, and student experiences.</p>
+
+                <form method="post" class="signin-form space-y-5">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.GET.next|default:'' }}">
+
+                    {% if form.non_field_errors %}
+                        <div class="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                            {% for error in form.non_field_errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <div>
+                        <label for="{{ form.username.id_for_label }}" class="mb-2 block text-sm font-semibold">
+                            Username
+                        </label>
+                        <input
+                            type="text"
+                            name="{{ form.username.html_name }}"
+                            id="{{ form.username.id_for_label }}"
+                            value="{{ form.username.value|default:'' }}"
+                            autocomplete="username"
+                            required
+                            autofocus
+                            class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-secondary focus:ring-2 focus:ring-secondary/20"
+                        >
+                        {% for error in form.username.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+
+                    <div>
+                        <label for="{{ form.password.id_for_label }}" class="mb-2 block text-sm font-semibold">
+                            Password
+                        </label>
+                        <input
+                            type="password"
+                            name="{{ form.password.html_name }}"
+                            id="{{ form.password.id_for_label }}"
+                            autocomplete="current-password"
+                            required
+                            class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-secondary focus:ring-2 focus:ring-secondary/20"
+                        >
+                        {% for error in form.password.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+
+                    <button type="submit" class="signin-submit w-full rounded-xl bg-primary-container px-4 py-3.5 text-sm font-bold text-white transition hover:bg-primary">
+                        Sign in to your workspace <span aria-hidden="true">→</span>
+                    </button>
+                </form>
+                <div class="mt-7 flex items-center gap-3 text-xs text-slate-500"><span class="material-symbols-outlined text-base text-emerald-600">verified_user</span><span>Secure access for authorized campus staff</span></div>
+                <p class="mt-12 border-t border-slate-200 pt-5 text-xs text-slate-400">CampusPulse Administration <span class="mx-1">·</span> USIU-Africa</p>
+            </div>
+          </div>
+        </section>
+    </main>
+</body>
+</html>

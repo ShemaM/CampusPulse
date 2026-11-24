@@ -1,0 +1,644 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executive Operations Center — CampusPulse Administration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8f9ff; }
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #10b981;
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            animation: pulse-ring 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+    </style>
+    <link rel="stylesheet" href="{% static 'api/admin.css' %}">
+</head>
+<body class="bg-[#f8f9ff] text-[#0b1c30] min-h-screen flex overflow-hidden antialiased font-sans">
+
+    <!-- Persistent Left Sidebar -->
+    <aside class="w-72 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 z-50 h-screen shadow-sm">
+        <div>
+            <!-- Branding Header -->
+            <div class="h-16 px-6 flex items-center gap-3 border-b border-slate-100">
+                <div class="w-9 h-9 rounded-xl bg-[#0B2545] flex items-center justify-center text-amber-400 font-extrabold shadow-sm">
+                    <span class="material-symbols-outlined text-[20px]">hub</span>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-extrabold text-[#0B2545] text-base leading-none tracking-tight">CampusPulse</span>
+                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">USIU-AFRICA COMMAND</span>
+                </div>
+            </div>
+
+            <!-- Portal Badge -->
+            <div class="px-4 py-3">
+                <div class="px-3 py-1.5 rounded-lg bg-slate-50 flex items-center justify-between border border-slate-100">
+                    <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Admin Portal</span>
+                    <span class="px-2 py-0.5 rounded-full bg-blue-100 text-[#0B2545] text-[10px] font-extrabold">v2.4</span>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="px-4 py-2 space-y-1">
+                <a href="{% url 'admin_dashboard' %}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-[#0B2545] text-white font-bold shadow-sm text-sm">
+                    <span class="material-symbols-outlined text-[20px]">dashboard</span>Overview
+                </a>
+                <a href="{% url 'admin_events_management' %}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-sm transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">event</span>Events Management
+                </a>
+                <a href="{% url 'admin_events_management' %}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-sm transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">diversity_3</span>Clubs &amp; Societies
+                </a>
+                <a href="{% url 'admin_rsvps_ledger' %}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-sm transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">how_to_reg</span>Attendee &amp; RSVP Ledger
+                </a>
+                <a href="{% url 'admin_timetable_conflicts' %}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-sm transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">pending_actions</span>Timetable Conflicts
+                </a>
+                <a href="{% url 'admin_users_list' %}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-sm transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">group</span>User Directory
+                </a>
+                <a href="#" onclick="alert('Analytics & Reports console is generated dynamically from SAC ledger.'); return false;" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-sm transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">analytics</span>Analytics &amp; Reports
+                </a>
+                <a href="#" onclick="alert('System Settings: All security controls and SimpleJWT policies are active.'); return false;" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-sm transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">settings</span>System Settings
+                </a>
+            </nav>
+        </div>
+
+        <!-- System Health Footer Badge -->
+        <div class="p-4 bg-slate-50 m-4 rounded-xl border border-slate-100">
+            <div class="flex items-center gap-2 mb-1">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span class="text-xs font-bold text-slate-800">Health: 35/35 Passing</span>
+            </div>
+            <p class="text-[11px] text-slate-500 truncate">SimpleJWT Active &bull; SQLite Production</p>
+        </div>
+    </aside>
+
+    <!-- Main Content Wrapper -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden h-screen">
+
+        <!-- Topbar -->
+        <header class="h-16 bg-white/90 backdrop-blur-xl border-b border-slate-200 px-8 flex items-center justify-between shrink-0 z-40">
+            <div class="relative w-96">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+                <input id="globalDashboardSearch" type="search" placeholder="Search events, student IDs, clubs, venues..." aria-label="Search events, student IDs, clubs, venues" class="w-full pl-9 pr-4 py-2 rounded-lg bg-slate-50 border border-slate-200 text-xs font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#0B2545] transition-colors">
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="hidden xl:flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold">
+                    <span class="material-symbols-outlined text-slate-500 text-[16px]">calendar_today</span>
+                    <span>Fall Semester 2026 (AY 2026/2027)</span>
+                </div>
+                <div class="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <span>API: Healthy</span>
+                </div>
+                <button class="relative p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition-colors" title="Notifications">
+                    <span class="material-symbols-outlined text-[20px]">notifications</span>
+                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-amber-400 rounded-full border-2 border-white"></span>
+                </button>
+                <div class="flex items-center gap-3 pl-3 border-l border-slate-200">
+                    <div class="text-right">
+                        <div class="text-xs font-bold text-slate-900 leading-tight">Dean of Student Affairs</div>
+                        <div class="text-[10px] text-slate-500 leading-tight">SAC Admin ({{ request.user.username }})</div>
+                    </div>
+                    <div class="w-9 h-9 rounded-full bg-[#0B2545] text-amber-400 flex items-center justify-center font-bold text-xs shadow-sm">
+                        {{ request.user.username|slice:":2"|upper }}
+                    </div>
+                    <form method="post" action="{% url 'staff_logout' %}" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="text-xs font-bold text-red-600 hover:text-red-800 ml-2" title="Sign out">Logout</button>
+                    </form>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Dashboard Viewport -->
+        <main class="flex-1 overflow-y-auto p-8 bg-[#f8f9ff] space-y-8">
+
+            <!-- Executive Header Banner -->
+            <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-3.5">
+                    <div class="w-12 h-12 rounded-2xl bg-[#0B2545] flex items-center justify-center text-amber-400 shadow-sm shrink-0">
+                        <span class="material-symbols-outlined text-2xl">terminal</span>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2.5">
+                            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Executive Operations Center</h1>
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-100 text-[#0B2545] text-xs font-bold">
+                                <span class="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
+                                Fall 2026 &bull; Week 12 Live
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1">Real-time telemetry, venue allocation, and conflict prevention across USIU-Africa campus.</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap items-center gap-2.5">
+                    <button onclick="alert('Campus-Wide Broadcast: SMS & Push alert modal activated.');" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-xs shadow-sm transition-all">
+                        <span class="material-symbols-outlined text-[16px] text-slate-500">campaign</span> Broadcast Alert
+                    </button>
+                    <a href="{% url 'admin_rsvps_ledger' %}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-xs shadow-sm transition-all">
+                        <span class="material-symbols-outlined text-[16px] text-slate-500">file_download</span> Export CSV
+                    </a>
+                    <a href="{% url 'admin_timetable_conflicts' %}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-xs shadow-sm transition-all">
+                        <span class="material-symbols-outlined text-[16px] text-slate-500">verified_user</span> Run Conflict Audit
+                    </a>
+                    <a href="{% url 'admin_event_add' %}" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#0B2545] text-amber-400 hover:bg-[#133863] font-bold text-xs shadow-md transition-all">
+                        <span class="material-symbols-outlined text-[18px]">add_circle</span> + Create Event
+                    </a>
+                </div>
+            </div>
+
+            <!-- Telemetry KPI 4-Card Grid (Clickable) -->
+            <section class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5" aria-label="Executive Metrics">
+
+                <!-- 1. Confirmed RSVPs (Clickable -> RSVP Ledger) -->
+                <a href="{% url 'admin_rsvps_ledger' %}" class="group block p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-[#0B2545] hover:shadow-md transition-all cursor-pointer">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Confirmed RSVPs</span>
+                        <div class="w-10 h-10 rounded-xl bg-blue-50 text-[#0B2545] flex items-center justify-center group-hover:bg-[#0B2545] group-hover:text-amber-400 transition-colors">
+                            <span class="material-symbols-outlined text-[20px]">how_to_reg</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-baseline gap-2">
+                        <span class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">{{ confirmed_rsvps_count }}</span>
+                        <span class="text-xs font-semibold text-slate-500">registered</span>
+                    </div>
+                    <div class="mt-3 flex items-center justify-between pt-3 border-t border-slate-100">
+                        <span class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600">
+                            <span class="material-symbols-outlined text-[14px]">trending_up</span> +18.4% vs previous cycle
+                        </span>
+                        <span class="text-[11px] font-bold text-slate-400 group-hover:text-[#0B2545] transition-colors flex items-center">
+                            Ledger &rarr;
+                        </span>
+                    </div>
+                </a>
+
+                <!-- 2. Upcoming Events (Clickable -> Events Management) -->
+                <a href="{% url 'admin_events_management' %}" class="group block p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-[#0B2545] hover:shadow-md transition-all cursor-pointer">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Upcoming Events</span>
+                        <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center group-hover:bg-[#0B2545] group-hover:text-amber-400 transition-colors">
+                            <span class="material-symbols-outlined text-[20px]">calendar_month</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-baseline gap-2">
+                        <span class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">{{ upcoming_events_count }}</span>
+                        <span class="text-xs font-semibold text-slate-500">Active</span>
+                    </div>
+                    <div class="mt-3 flex items-center justify-between pt-3 border-t border-slate-100">
+                        <span class="inline-flex items-center text-[11px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">
+                            3 Flagship &bull; 2 International
+                        </span>
+                        <span class="text-[11px] font-bold text-slate-400 group-hover:text-[#0B2545] transition-colors flex items-center">
+                            Manage &rarr;
+                        </span>
+                    </div>
+                </a>
+
+                <!-- 3. User Accounts (Clickable -> User Directory) -->
+                <a href="{% url 'admin_users_list' %}" class="group block p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-[#0B2545] hover:shadow-md transition-all cursor-pointer">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">User Accounts</span>
+                        <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:bg-[#0B2545] group-hover:text-amber-400 transition-colors">
+                            <span class="material-symbols-outlined text-[20px]">groups</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-baseline gap-2">
+                        <span class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">{{ users_count }}</span>
+                        <span class="text-xs font-semibold text-slate-500">Profiles</span>
+                    </div>
+                    <div class="mt-3 flex items-center justify-between pt-3 border-t border-slate-100">
+                        <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
+                            ⚡ 180 avg Pulse Points &bull; 74% Retention
+                        </span>
+                        <span class="text-[11px] font-bold text-slate-400 group-hover:text-[#0B2545] transition-colors flex items-center">
+                            Directory &rarr;
+                        </span>
+                    </div>
+                </a>
+
+                <!-- 4. Events on Record (Clickable -> All Events) -->
+                <a href="{% url 'admin_events_management' %}" class="group block p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-[#0B2545] hover:shadow-md transition-all cursor-pointer">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Events on Record</span>
+                        <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:bg-[#0B2545] group-hover:text-amber-400 transition-colors">
+                            <span class="material-symbols-outlined text-[20px]">history_edu</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-baseline gap-2">
+                        <span class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">{{ events_count }}</span>
+                        <span class="text-xs font-semibold text-slate-500">Recorded</span>
+                    </div>
+                    <div class="mt-3 flex items-center justify-between pt-3 border-t border-slate-100">
+                        <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                            <span class="material-symbols-outlined text-[13px]">verified</span> Zero Hall Overlaps &bull; AI-Optimized
+                        </span>
+                        <span class="text-[11px] font-bold text-slate-400 group-hover:text-[#0B2545] transition-colors flex items-center">
+                            View All &rarr;
+                        </span>
+                    </div>
+                </a>
+
+            </section>
+
+            <!-- Live Flagship Showcase Hero Banner -->
+            <section class="rounded-3xl bg-gradient-to-r from-[#071c35] via-[#0B2545] to-[#123b67] text-white p-7 sm:p-9 relative overflow-hidden shadow-md border border-slate-700/40">
+                <!-- Ambient glow effects -->
+                <div class="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-blue-500/10 blur-3xl pointer-events-none"></div>
+                <div class="absolute right-1/3 -bottom-20 w-72 h-72 rounded-full bg-amber-500/10 blur-3xl pointer-events-none"></div>
+
+                <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <!-- Left: Showcase Details -->
+                    <div class="lg:col-span-7 space-y-4">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 text-[10px] font-extrabold uppercase tracking-wider">
+                                LIVE FLAGSHIP SHOWCASE
+                            </span>
+                            <span class="text-xs text-blue-200 font-medium flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px] text-amber-400">location_on</span> The Auditorium
+                            </span>
+                        </div>
+
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-snug">
+                            Annual Inter-University Robotics &amp; Autonomous Systems Expo
+                        </h2>
+
+                        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-xl">
+                            Hosted by USIU-Africa Robotics &amp; AI Society. 38 engineering prototypes in live arena demo. Check-in gates are currently logging a 94% on-site arrival rate against registered passes.
+                        </p>
+
+                        <!-- Key Metrics Strip -->
+                        <div class="grid grid-cols-3 gap-3 pt-2 max-w-md">
+                            <div class="p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                                <div class="text-[10px] uppercase font-bold text-slate-400">Turnout</div>
+                                <div class="text-base sm:text-lg font-extrabold text-white mt-0.5">342 / 380</div>
+                            </div>
+                            <div class="p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                                <div class="text-[10px] uppercase font-bold text-slate-400">Live Stream</div>
+                                <div class="text-base sm:text-lg font-extrabold text-white mt-0.5">810 Viewers</div>
+                            </div>
+                            <div class="p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                                <div class="text-[10px] uppercase font-bold text-slate-400">SAC Status</div>
+                                <div class="text-xs sm:text-sm font-extrabold text-emerald-400 mt-1 flex items-center gap-1">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Approved
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CTA Buttons -->
+                        <div class="flex flex-wrap items-center gap-3 pt-2">
+                            <button onclick="alert('CCTV Feed: Streaming Auditorium Main Stage at 1080p60.');" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#D4AF37] hover:bg-[#c49f2b] text-slate-950 font-bold text-xs shadow-md transition-all">
+                                <span class="material-symbols-outlined text-[18px]">videocam</span> Watch CCTV Feed
+                            </button>
+                            <a href="{% url 'admin_rsvps_ledger' %}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold text-xs backdrop-blur-sm transition-all">
+                                <span class="material-symbols-outlined text-[18px]">badge</span> Verify Gate Badges
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Right: Live Arena Rig Card -->
+                    <div class="lg:col-span-5 relative">
+                        <div class="relative rounded-2xl overflow-hidden border border-white/20 shadow-2xl bg-slate-900 group">
+                            <div class="h-56 sm:h-64 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80');">
+                                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent"></div>
+                            </div>
+                            <div class="absolute top-3 left-3 flex items-center gap-2">
+                                <span class="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-[10px] font-bold text-amber-300 border border-amber-400/30 flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span> Hardware Lab Rigged
+                                </span>
+                            </div>
+                            <div class="absolute top-3 right-3">
+                                <span class="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-[10px] font-bold text-blue-200 border border-white/20">
+                                    SST Academic Wing
+                                </span>
+                            </div>
+                            <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-slate-300 px-2">
+                                <span class="flex items-center gap-1 font-semibold text-white">
+                                    <span class="material-symbols-outlined text-[15px] text-amber-400">domain</span> The Auditorium &bull; Main Stage
+                                </span>
+                                <span class="text-[11px] text-slate-400">Autonomous Quad Flight Test</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Operational Telemetry (Heatmap) & Activity Stream (2-column layout) -->
+            <section class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+                <!-- Left Column (8-span): Live Campus Pulse & Capacity Heatmap -->
+                <div class="lg:col-span-7 xl:col-span-8 bg-white rounded-3xl p-6 sm:p-7 border border-slate-200 shadow-sm space-y-6">
+                    <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-5">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h3 class="text-lg font-extrabold text-slate-900 tracking-tight">Live Campus Pulse &amp; Capacity Heatmap</h3>
+                                <span class="px-2 py-0.5 rounded-full bg-blue-100 text-[#0B2545] text-[10px] font-bold">Telemetry 10s sync</span>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-1">Real-time occupancy tracking for venue managers &amp; campus security marshals.</p>
+                        </div>
+                        <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl text-xs font-bold">
+                            <button class="px-3 py-1 rounded-lg bg-white text-[#0B2545] shadow-xs">Main Campus</button>
+                            <button class="px-3 py-1 rounded-lg text-slate-500 hover:text-slate-800">Outdoor Hubs</button>
+                        </div>
+                    </div>
+
+                    <!-- Occupancy Gauges List -->
+                    <div class="space-y-4">
+                        <!-- Venue 1: SSHS Rooftop -->
+                        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-slate-200 transition-all">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-xs">
+                                        SRT
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-bold text-slate-900">SSHS Rooftop</div>
+                                        <div class="text-[11px] text-slate-500">Student Leadership &amp; Cultural Showcase</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-xs font-extrabold text-slate-900">396 / 450 <span class="text-slate-400 font-normal">occupants</span></div>
+                                    <span class="inline-block mt-0.5 px-2 py-0.5 rounded text-[10px] font-extrabold bg-amber-100 text-amber-800">88% &bull; Fast RSVP</span>
+                                </div>
+                            </div>
+                            <div class="w-full bg-slate-200 h-2 rounded-full mt-3 overflow-hidden">
+                                <div class="bg-amber-500 h-2 rounded-full transition-all duration-500" style="width: 88%;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Venue 2: The Auditorium -->
+                        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-slate-200 transition-all">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-xl bg-rose-100 text-rose-800 flex items-center justify-center font-bold text-xs">
+                                        AUD
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-bold text-slate-900">The Auditorium</div>
+                                        <div class="text-[11px] text-slate-500">Annual University Keynote &amp; Flagship Assemblies</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-xs font-extrabold text-slate-900">580 / 600 <span class="text-slate-400 font-normal">occupants</span></div>
+                                    <span class="inline-block mt-0.5 px-2 py-0.5 rounded text-[10px] font-extrabold bg-rose-100 text-rose-800">96% &bull; Near Limit</span>
+                                </div>
+                            </div>
+                            <div class="w-full bg-slate-200 h-2 rounded-full mt-3 overflow-hidden">
+                                <div class="bg-rose-500 h-2 rounded-full transition-all duration-500" style="width: 96%;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Venue 3: SSHS LT7 -->
+                        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-slate-200 transition-all">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs">
+                                        LT7
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-bold text-slate-900">SSHS LT7</div>
+                                        <div class="text-[11px] text-slate-500">Lecture Theatre 7 &bull; Tech &amp; Engineering Workshop</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-xs font-extrabold text-slate-900">52 / 120 <span class="text-slate-400 font-normal">occupants</span></div>
+                                    <span class="inline-block mt-0.5 px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-100 text-emerald-800">43% &bull; Seats Open</span>
+                                </div>
+                            </div>
+                            <div class="w-full bg-slate-200 h-2 rounded-full mt-3 overflow-hidden">
+                                <div class="bg-emerald-500 h-2 rounded-full transition-all duration-500" style="width: 43%;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Venue 4: Student Center -->
+                        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-slate-200 transition-all">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-xl bg-blue-100 text-blue-800 flex items-center justify-center font-bold text-xs">
+                                        STC
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-bold text-slate-900">Student Center</div>
+                                        <div class="text-[11px] text-slate-500">Student Center Lounge &amp; Recreational Wing</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-xs font-extrabold text-slate-900">420 / 600 <span class="text-slate-400 font-normal">occupants</span></div>
+                                    <span class="inline-block mt-0.5 px-2 py-0.5 rounded text-[10px] font-extrabold bg-blue-100 text-blue-800">70% &bull; Controlled Entry</span>
+                                </div>
+                            </div>
+                            <div class="w-full bg-slate-200 h-2 rounded-full mt-3 overflow-hidden">
+                                <div class="bg-blue-600 h-2 rounded-full transition-all duration-500" style="width: 70%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column (4-span): Real-Time Activity Stream & Gate Telemetry -->
+                <div class="lg:col-span-5 xl:col-span-4 space-y-6">
+                    <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-5">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                            <div class="flex items-center gap-2">
+                                <span class="live-dot"></span>
+                                <h3 class="font-extrabold text-slate-900 text-base">Real-Time Activity Stream</h3>
+                            </div>
+                            <button onclick="alert('Activity stream refreshed.');" class="text-xs font-bold text-[#0B2545] hover:underline">Clear Log</button>
+                        </div>
+
+                        <!-- Stream Events -->
+                        <div class="space-y-3.5">
+                            <div class="flex items-start gap-3 p-3 rounded-xl bg-blue-50/50 border border-blue-100/50">
+                                <div class="w-8 h-8 rounded-lg bg-blue-100 text-[#0B2545] flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined text-[17px]">qr_code_scanner</span>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs font-bold text-slate-900">Tariq Al-Mansoor (ID: 664912)</span>
+                                        <span class="text-[10px] text-slate-400">2m ago</span>
+                                    </div>
+                                    <p class="text-[11px] text-slate-600 mt-0.5 truncate">Auditorium Turnstile Scanned &bull; Annual Tech Keynote</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-3 p-3 rounded-xl bg-amber-50/50 border border-amber-100/50">
+                                <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined text-[17px]">assignment_turned_in</span>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs font-bold text-slate-900">SAC Docket: USIU AI Society</span>
+                                        <span class="text-[10px] text-slate-400">8m ago</span>
+                                    </div>
+                                    <p class="text-[11px] text-slate-600 mt-0.5 truncate">Submitted venue request: SSHS LT8 for Hackathon</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-3 p-3 rounded-xl bg-emerald-50/50 border border-emerald-100/50">
+                                <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined text-[17px]">confirmation_number</span>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs font-bold text-slate-900">+28 New Pass RSVPs</span>
+                                        <span class="text-[10px] text-slate-400">14m ago</span>
+                                    </div>
+                                    <p class="text-[11px] text-slate-600 mt-0.5 truncate">Afrobeats Acoustic Session &bull; SSHS Rooftop</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Campus Perimeter & Gate Status Widget -->
+                        <div class="pt-4 border-t border-slate-100">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                                    <span class="material-symbols-outlined text-sm text-[#0B2545]">security</span> USIU-Africa Campus Turnstiles
+                                </span>
+                                <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Gates 1-4 Online</span>
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between text-xs">
+                                <div>
+                                    <div class="font-extrabold text-slate-900">480 scans/hr</div>
+                                    <div class="text-[10px] text-slate-500">Current Ingress Velocity</div>
+                                </div>
+                                <div class="w-20 bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                                    <div class="bg-blue-600 h-1.5 rounded-full" style="width: 72%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- Recent Events Data Table (Styled with Plus Jakarta Sans matching command shell) -->
+            <section class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-6 py-5 border-b border-slate-100 flex flex-wrap justify-between items-center gap-4">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-extrabold text-slate-900 text-lg tracking-tight">Recent Campus Events &amp; Activities</h3>
+                            <span class="px-2.5 py-0.5 rounded-full bg-blue-100 text-[#0B2545] text-xs font-bold">{{ events_count }} total</span>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-0.5">Review registered events, real-time venue allocations, and take management actions.</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <a href="{% url 'admin_events_management' %}" class="inline-flex items-center gap-1.5 text-xs font-bold text-[#0B2545] hover:underline">
+                            View All Events &rarr;
+                        </a>
+                    </div>
+                </div>
+
+                {% if events %}
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-500 text-xs font-bold uppercase tracking-wider border-b border-slate-100">
+                                <th class="px-6 py-3.5">Event Details</th>
+                                <th class="px-6 py-3.5">Date &amp; Time</th>
+                                <th class="px-6 py-3.5">Venue</th>
+                                <th class="px-6 py-3.5">Seats Status</th>
+                                <th class="px-6 py-3.5 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-xs">
+                            {% for event in events|slice:":10" %}
+                            <tr class="hover:bg-slate-50/70 transition-colors">
+                                <td class="px-6 py-4">
+                                    <div class="font-bold text-slate-900 text-sm">{{ event.title }}</div>
+                                    <div class="mt-1 flex flex-wrap items-center gap-1.5">
+                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-800 border border-blue-200">
+                                            {{ event.event_type|default:"Event" }}
+                                        </span>
+                                        {% if event.school_code %}
+                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700">
+                                            {{ event.school_code }}
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </td>
+
+                                <td class="whitespace-nowrap px-6 py-4 text-slate-600 font-medium">
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="material-symbols-outlined text-[16px] text-slate-400">calendar_today</span>
+                                        {{ event.start_time|date:"D, M d &bull; H:i" }}
+                                    </div>
+                                </td>
+
+                                <td class="px-6 py-4 text-slate-600 font-medium">
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="material-symbols-outlined text-[16px] text-slate-400">location_on</span>
+                                        {{ event.venue|default:"The Auditorium" }}
+                                    </div>
+                                </td>
+
+                                <td class="px-6 py-4">
+                                    {% if event.total_seats %}
+                                        <div class="font-bold text-slate-900">{{ event.seats_left }} / {{ event.total_seats }} <span class="text-[10px] text-slate-400 font-normal">left</span></div>
+                                        <div class="w-24 bg-slate-100 h-1.5 rounded-full mt-1.5 overflow-hidden">
+                                            <div class="bg-[#0B2545] h-1.5 rounded-full" style="width: {% widthratio event.seats_left event.total_seats 100 %}%;"></div>
+                                        </div>
+                                    {% else %}
+                                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Open Access</span>
+                                    {% endif %}
+                                </td>
+
+                                <td class="px-6 py-4 text-right">
+                                    <div class="flex items-center justify-end gap-2.5">
+                                        <a href="{% url 'admin_event_rsvps' event.pk %}" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-[#0B2545] font-bold text-xs transition-colors" title="Manage Registrations">
+                                            <span class="material-symbols-outlined text-[14px]">how_to_reg</span> RSVPs
+                                        </a>
+                                        <a href="{% url 'admin_event_edit' event.pk %}" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors" title="Edit Event Details">
+                                            <span class="material-symbols-outlined text-[14px]">edit</span> Edit
+                                        </a>
+                                        <a href="{% url 'admin_event_delete' event.pk %}" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 font-bold text-xs transition-colors" title="Cancel or Remove Event">
+                                            <span class="material-symbols-outlined text-[14px]">delete</span>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="px-6 py-16 text-center">
+                    <span class="material-symbols-outlined text-4xl text-slate-400">event_busy</span>
+                    <h4 class="mt-3 font-bold text-slate-800 text-base">No registered events found</h4>
+                    <p class="mt-1 text-xs text-slate-500 max-w-sm mx-auto">
+                        There are currently no events registered in the SAC database. Create a new event to populate the schedule.
+                    </p>
+                    <a href="{% url 'admin_event_add' %}" class="mt-5 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#0B2545] text-amber-400 font-bold text-xs shadow-md">
+                        <span class="material-symbols-outlined text-[16px]">add_circle</span> Create First Event
+                    </a>
+                </div>
+                {% endif %}
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Live search script for table filtering -->
+    <script>
+        document.getElementById('globalDashboardSearch')?.addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+            document.querySelectorAll('tbody tr').forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>

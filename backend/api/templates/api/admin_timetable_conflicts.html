@@ -1,0 +1,101 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timetable Schedule Conflicts — CampusPulse Administration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+    <style>body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8f9ff; }</style>
+    <link rel="stylesheet" href="{% static 'api/admin.css' %}">
+</head>
+<body class="bg-[#f8f9ff] text-[#0b1c30] min-h-screen flex overflow-hidden antialiased font-sans">
+
+    <!-- Persistent Left Sidebar -->
+    <aside class="w-72 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 z-50 h-screen shadow-sm">
+        <div>
+            <div class="h-16 px-6 flex items-center gap-3 border-b border-slate-100">
+                <div class="w-9 h-9 rounded-xl bg-[#0B2545] flex items-center justify-center text-amber-400 font-extrabold shadow-sm">
+                    <span class="material-symbols-outlined text-[20px]">school</span>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-extrabold text-[#0B2545] text-base leading-none">CampusPulse</span>
+                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">USIU-AFRICA ADMINISTRATION</span>
+                </div>
+            </div>
+            <div class="px-4 py-3">
+                <div class="px-3 py-1 rounded-lg bg-slate-50 flex items-center justify-between">
+                    <span class="text-[11px] font-bold text-slate-500 uppercase">Admin Portal</span>
+                    <span class="px-2 py-0.5 rounded-full bg-blue-100 text-[#0B2545] text-[10px] font-bold">Active</span>
+                </div>
+            </div>
+            <nav class="px-4 py-2 space-y-1">
+                <a href="/api/dashboard/" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-sm transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">dashboard</span>Overview
+                </a>
+                <a href="/api/dashboard/events/" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-sm transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">event</span>Events Management
+                </a>
+                <a href="/api/dashboard/rsvps/" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-sm transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">how_to_reg</span>Attendee &amp; RSVP Ledger
+                </a>
+                <a href="/api/dashboard/users/" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-sm transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">group</span>User Directory
+                </a>
+                <a href="/api/dashboard/conflicts/" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-[#0B2545] text-white font-bold shadow-sm text-sm">
+                    <span class="material-symbols-outlined text-[20px]">pending_actions</span>Timetable Conflicts
+                </a>
+            </nav>
+        </div>
+        <div class="p-4 bg-slate-50 m-4 rounded-xl border border-slate-100">
+            <div class="flex items-center gap-2 mb-1">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span class="text-xs font-bold text-slate-800">System Status: Operational</span>
+            </div>
+            <p class="text-[11px] text-slate-500 truncate">CampusPulse API Services Online</p>
+        </div>
+    </aside>
+
+    <!-- Main Content Wrapper -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden h-screen">
+        <header class="h-16 bg-white/90 backdrop-blur-xl border-b border-slate-200 px-8 flex items-center justify-between shrink-0 z-40">
+            <div class="relative w-96">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+                <input type="text" placeholder="Search course codes, lab rooms, student groups..." class="w-full pl-9 pr-4 py-2 rounded-lg bg-slate-50 border border-slate-200 text-xs font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#0B2545]">
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="hidden xl:flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold">
+                    <span class="material-symbols-outlined text-slate-500 text-[16px]">calendar_today</span><span>Fall Semester 2026 (AY 2026/2027)</span>
+                </div>
+                <div class="flex items-center gap-2 pl-3 border-l border-slate-200">
+                    <div class="text-right">
+                        <div class="text-xs font-bold text-slate-900 leading-tight">{{ request.user.username }}</div>
+                        <div class="text-[10px] text-slate-500 leading-tight">Administrator</div>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-[#0B2545] text-amber-400 flex items-center justify-center font-bold text-xs">
+                        {{ request.user.username|slice:":2"|upper }}
+                    </div>
+                    <form method="post" action="{% url 'staff_logout' %}" class="inline">{% csrf_token %}<button type="submit" class="text-xs font-bold text-red-600 hover:text-red-800 ml-2">Logout</button></form>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-8 bg-[#f8f9ff] space-y-8">
+
+            <!-- Header Bar -->
+            <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-2xl font-extrabold text-slate-900">Timetable Conflicts</h1>
+                        <span class="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">Data source unavailable</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-0.5">Review schedule and event conflicts when conflict data is available.</p>
+                </div>
+            </div>
+
+            <section class="rounded-2xl border border-slate-200 bg-white p-7 shadow-sm"><div class="mx-auto max-w-2xl text-center"><span class="material-symbols-outlined text-3xl text-[#0B2545]">calendar_view_week</span><h2 class="mt-4 text-xl font-extrabold text-slate-900">Timetable conflict data is not connected</h2><p class="mt-2 text-sm leading-6 text-slate-600">This page does not currently receive schedule or RSVP conflict records. No conflicts or resolution actions are shown until a real source is connected.</p></div></section>
+        </main>
+    </div>
+</body>
+</html>

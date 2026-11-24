@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="360dp"
+    android:height="44dp"
+    android:viewportWidth="360"
+    android:viewportHeight="44">
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M0,4 Q90,26 180,4 Q270,26 360,4"
+        android:strokeColor="#26002B49"
+        android:strokeWidth="1.2" />
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M0,10 Q90,32 180,10 Q270,32 360,10"
+        android:strokeColor="#33D99400"
+        android:strokeWidth="1" />
+    <path
+        android:fillColor="@color/usiu_gold"
+        android:pathData="M45,17 L47,22 L52,24 L47,26 L45,31 L43,26 L38,24 L43,22 Z" />
+    <path
+        android:fillColor="@color/festive_cranberry"
+        android:pathData="M90,22 m-3.5,0 a3.5,3.5 0 1,0 7,0 a3.5,3.5 0 1,0 -7,0" />
+    <path
+        android:fillColor="@color/festive_pine"
+        android:pathData="M135,17 L137,22 L142,24 L137,26 L135,31 L133,26 L128,24 L133,22 Z" />
+    <path
+        android:fillColor="@color/usiu_gold"
+        android:pathData="M180,9 L182.5,15 L188.5,17.5 L182.5,20 L180,26 L177.5,20 L171.5,17.5 L177.5,15 Z" />
+    <path
+        android:fillColor="@color/festive_pine"
+        android:pathData="M225,17 L227,22 L232,24 L227,26 L225,31 L223,26 L218,24 L223,22 Z" />
+    <path
+        android:fillColor="@color/festive_cranberry"
+        android:pathData="M270,22 m-3.5,0 a3.5,3.5 0 1,0 7,0 a3.5,3.5 0 1,0 -7,0" />
+    <path
+        android:fillColor="@color/usiu_gold"
+        android:pathData="M315,17 L317,22 L322,24 L317,26 L315,31 L313,26 L308,24 L313,22 Z" />
+</vector>

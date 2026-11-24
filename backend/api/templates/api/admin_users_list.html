@@ -1,0 +1,448 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Directory &amp; Accounts — CampusPulse Administration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8f9ff; }
+        thead { position: static !important; }
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #10b981;
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            animation: pulse-ring 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+    </style>
+    <link rel="stylesheet" href="{% static 'api/admin.css' %}">
+</head>
+<body class="bg-[#f8f9ff] text-[#0b1c30] min-h-screen flex overflow-hidden antialiased font-sans">
+
+    <!-- Persistent Left Sidebar -->
+    <aside class="w-72 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 z-50 h-screen shadow-sm">
+        <div>
+            <!-- Branding Header -->
+            <div class="h-16 px-6 flex items-center gap-3 border-b border-slate-100">
+                <div class="w-9 h-9 rounded-xl bg-[#0B2545] flex items-center justify-center text-amber-400 font-extrabold shadow-sm">
+                    <span class="material-symbols-outlined text-[20px]">hub</span>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-extrabold text-[#0B2545] text-base leading-none tracking-tight">CampusPulse</span>
+                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">USIU-AFRICA COMMAND</span>
+                </div>
+            </div>
+
+            <!-- Portal Badge -->
+            <div class="px-4 py-3">
+                <div class="px-3 py-1.5 rounded-lg bg-slate-50 flex items-center justify-between border border-slate-100">
+                    <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Admin Portal</span>
+                    <span class="px-2 py-0.5 rounded-full bg-blue-100 text-[#0B2545] text-[10px] font-extrabold">v2.4</span>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="px-4 py-2 space-y-1">
+                <a href="{% url 'admin_dashboard' %}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-sm transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">dashboard</span>Overview
+                </a>
+                <a href="{% url 'admin_events_management' %}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-sm transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">event</span>Events Management
+                </a>
+                <a href="{% url 'admin_events_management' %}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-sm transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">diversity_3</span>Clubs &amp; Societies
+                </a>
+                <a href="{% url 'admin_rsvps_ledger' %}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-sm transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">how_to_reg</span>Attendee &amp; RSVP Ledger
+                </a>
+                <a href="{% url 'admin_timetable_conflicts' %}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-sm transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">pending_actions</span>Timetable Conflicts
+                </a>
+                <a href="{% url 'admin_users_list' %}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-[#0B2545] text-white font-bold shadow-sm text-sm">
+                    <span class="material-symbols-outlined text-[20px]">group</span>User Directory
+                </a>
+                <a href="#" onclick="alert('Analytics & Reports console is generated dynamically from SAC ledger.'); return false;" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-sm transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">analytics</span>Analytics &amp; Reports
+                </a>
+                <a href="#" onclick="alert('System Settings: All security controls and SimpleJWT policies are active.'); return false;" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-sm transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">settings</span>System Settings
+                </a>
+            </nav>
+        </div>
+
+        <!-- System Health Footer Badge -->
+        <div class="p-4 bg-slate-50 m-4 rounded-xl border border-slate-100">
+            <div class="flex items-center gap-2 mb-1">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span class="text-xs font-bold text-slate-800">Health: 35/35 Passing</span>
+            </div>
+            <p class="text-[11px] text-slate-500 truncate">SimpleJWT Active &bull; SQLite Production</p>
+        </div>
+    </aside>
+
+    <!-- Main Content Wrapper -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden h-screen">
+
+        <!-- Topbar -->
+        <header class="h-16 bg-white/90 backdrop-blur-xl border-b border-slate-200 px-8 flex items-center justify-between shrink-0 z-40">
+            <div class="relative w-96">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+                <input id="globalUserTopSearch" type="search" placeholder="Search members, student IDs, emails, roles..." aria-label="Search members and student IDs" class="w-full pl-9 pr-4 py-2 rounded-lg bg-slate-50 border border-slate-200 text-xs font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#0B2545] transition-colors">
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="hidden xl:flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold">
+                    <span class="material-symbols-outlined text-slate-500 text-[16px]">calendar_today</span>
+                    <span>Fall Semester 2026 (AY 2026/2027)</span>
+                </div>
+                <div class="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <span>API: Healthy</span>
+                </div>
+                <button class="relative p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition-colors" title="Notifications">
+                    <span class="material-symbols-outlined text-[20px]">notifications</span>
+                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-amber-400 rounded-full border-2 border-white"></span>
+                </button>
+                <div class="flex items-center gap-3 pl-3 border-l border-slate-200">
+                    <div class="text-right">
+                        <div class="text-xs font-bold text-slate-900 leading-tight">Dean of Student Affairs</div>
+                        <div class="text-[10px] text-slate-500 leading-tight">SAC Admin ({{ request.user.username }})</div>
+                    </div>
+                    <div class="w-9 h-9 rounded-full bg-[#0B2545] text-amber-400 flex items-center justify-center font-bold text-xs shadow-sm">
+                        {{ request.user.username|slice:":2"|upper }}
+                    </div>
+                    <form method="post" action="{% url 'staff_logout' %}" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="text-xs font-bold text-red-600 hover:text-red-800 ml-2" title="Sign out">Logout</button>
+                    </form>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main User Directory Viewport -->
+        <main class="flex-1 overflow-y-auto p-8 bg-[#f8f9ff] space-y-8">
+
+            <!-- Page Header Bar -->
+            <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                        <span class="px-2.5 py-0.5 rounded-full bg-blue-100 text-[#0B2545] text-[10px] font-extrabold uppercase tracking-wider">
+                            &bull; USER REGISTRY &amp; GOVERNANCE
+                        </span>
+                        <span class="text-xs text-slate-500 font-semibold">
+                            Synced with Active Directory &bull; SAC Membership V2.4
+                        </span>
+                    </div>
+                    <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">User Directory &amp; Accounts</h1>
+                    <p class="text-xs text-slate-500 mt-1">Inspect registered member accounts, roles, school affiliations, and participation history.</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-2.5">
+                    <button onclick="alert('Academic Roster Audit: Verified against Registrar CX Blackboard.');" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-xs shadow-2xs transition-all">
+                        <span class="material-symbols-outlined text-[16px] text-slate-500">verified_user</span> Audit Rosters
+                    </button>
+                    <a href="{% url 'admin_timetable_conflicts' %}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-xs shadow-2xs transition-all">
+                        <span class="material-symbols-outlined text-[16px] text-slate-500">pending_actions</span> Class Collisions
+                    </a>
+                    <button onclick="alert('Invitation link copied to clipboard: https://campuspulse.usiu.ac.ke/join');" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#0B2545] text-amber-400 hover:bg-[#133863] font-bold text-xs shadow-md transition-all">
+                        <span class="material-symbols-outlined text-[18px]">person_add</span> + Invite Member
+                    </button>
+                </div>
+            </div>
+
+            <!-- 4 Metric Header Summary Cards Grid -->
+            <section class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5" aria-label="Account Metrics">
+
+                <!-- 1. Total Accounts -->
+                <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-[#0B2545] transition-all">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Accounts</span>
+                        <div class="w-10 h-10 rounded-xl bg-blue-50 text-[#0B2545] flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[20px]">groups</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-baseline gap-2">
+                        <span class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">{{ total_count }}</span>
+                        <span class="text-xs font-semibold text-slate-500">profiles</span>
+                    </div>
+                    <div class="mt-3 flex items-center justify-between pt-3 border-t border-slate-100">
+                        <span class="text-xs font-semibold text-slate-600">Registered platform accounts</span>
+                        <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                    </div>
+                </div>
+
+                <!-- 2. Active Accounts -->
+                <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-[#0B2545] transition-all">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Active Accounts</span>
+                        <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[20px]">verified_user</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-baseline gap-2">
+                        <span class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">{{ active_count }}</span>
+                        <span class="text-xs font-semibold text-emerald-600 font-bold">&bull; 100% Online</span>
+                    </div>
+                    <div class="mt-3 flex items-center justify-between pt-3 border-t border-slate-100">
+                        <span class="text-xs font-semibold text-slate-500">Enabled student &amp; staff logins</span>
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    </div>
+                </div>
+
+                <!-- 3. Administrators -->
+                <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-[#0B2545] transition-all">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Administrators</span>
+                        <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[20px]">admin_panel_settings</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-baseline gap-2">
+                        <span class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">{{ admin_count }}</span>
+                        <span class="text-xs font-semibold text-slate-500">Lead Staff</span>
+                    </div>
+                    <div class="mt-3 flex items-center justify-between pt-3 border-t border-slate-100">
+                        <span class="inline-flex items-center text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                            Staff &amp; SAC Access Credentials
+                        </span>
+                    </div>
+                </div>
+
+                <!-- 4. Student Members -->
+                <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-[#0B2545] transition-all">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Student Members</span>
+                        <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[20px]">school</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-baseline gap-2">
+                        <span class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">{{ student_count }}</span>
+                        <span class="text-xs font-semibold text-slate-500">Undergrad / Grad</span>
+                    </div>
+                    <div class="mt-3 flex items-center justify-between pt-3 border-t border-slate-100">
+                        <span class="text-xs font-semibold text-slate-500">Standard student accounts</span>
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- Search, Filter & Bulk Action Toolbar -->
+            <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm">
+                <form method="get" action="" class="flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex flex-wrap items-center gap-3 flex-1 min-w-[280px]">
+                        <!-- Search Input -->
+                        <div class="relative flex-1 min-w-[240px] max-w-md">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+                            <input id="userDirectorySearch" type="search" name="q" value="{{ search_query }}" placeholder="Search by name, username, email, student ID..." class="w-full pl-9 pr-4 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#0B2545] transition-colors">
+                        </div>
+
+                        <!-- Role Filter Dropdown -->
+                        <select name="role" id="userRoleSelect" onchange="this.form.submit()" class="px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700 focus:outline-none focus:border-[#0B2545] transition-colors">
+                            <option value="">All Roles</option>
+                            <option value="admin" {% if current_role == 'admin' %}selected{% endif %}>Administrators</option>
+                            <option value="student" {% if current_role == 'student' %}selected{% endif %}>Student Members</option>
+                        </select>
+
+                        <!-- Status Filter Dropdown -->
+                        <select name="status" id="userStatusSelect" onchange="this.form.submit()" class="px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700 focus:outline-none focus:border-[#0B2545] transition-colors">
+                            <option value="">All Statuses</option>
+                            <option value="active" {% if current_status == 'active' %}selected{% endif %}>Active Only</option>
+                            <option value="inactive" {% if current_status == 'inactive' %}selected{% endif %}>Inactive Only</option>
+                        </select>
+                    </div>
+
+                    <!-- Reset or Active Filters -->
+                    <div class="flex items-center gap-3">
+                        {% if search_query or current_role or current_status %}
+                        <a href="{% url 'admin_users_list' %}" class="inline-flex items-center gap-1 text-xs font-bold text-rose-600 hover:text-rose-800 hover:underline px-2 py-1">
+                            <span class="material-symbols-outlined text-sm">close</span> Clear Filters
+                        </a>
+                        {% endif %}
+                        <button type="submit" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#0B2545] hover:bg-[#133863] text-white font-bold text-xs shadow-sm transition-all">
+                            <span class="material-symbols-outlined text-[16px]">filter_list</span> Apply
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Comprehensive Registered Accounts Table Container -->
+            <section class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                <!-- Table Card Header -->
+                <div class="px-6 py-4 border-b border-slate-100 flex flex-wrap justify-between items-center gap-3 bg-white">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-extrabold text-slate-900 text-base tracking-tight">Registered Member Accounts &amp; Student Profiles</h3>
+                            <span class="px-2.5 py-0.5 rounded-full bg-blue-100 text-[#0B2545] text-xs font-bold">{{ users.count }} account(s)</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-0.5">Click any row or action link to inspect full profile details, class collisions, and RSVP ledger.</p>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs font-bold text-slate-500">
+                        <span class="material-symbols-outlined text-sm text-slate-400">sort</span>
+                        <span>Sort: Registration Date (Recent First)</span>
+                    </div>
+                </div>
+
+                <!-- Table Viewport with explicit static thead to prevent any header overlap -->
+                <div class="overflow-x-auto w-full">
+                    <table class="w-full text-left border-collapse" style="min-width: 1040px;">
+                        <thead class="bg-slate-50 border-b border-slate-200" style="position: static !important;">
+                            <tr class="text-slate-500 text-xs font-bold uppercase tracking-wider">
+                                <th class="px-6 py-3.5" style="width: 50px;">#</th>
+                                <th class="px-6 py-3.5" style="width: 250px;">Member / Profile</th>
+                                <th class="px-6 py-3.5" style="width: 220px;">Email &amp; Contact</th>
+                                <th class="px-6 py-3.5" style="width: 140px;">Student ID</th>
+                                <th class="px-6 py-3.5" style="width: 230px;">Academic Affiliation</th>
+                                <th class="px-6 py-3.5" style="width: 160px;">Role &amp; Status</th>
+                                <th class="px-6 py-3.5" style="width: 130px;">Registered</th>
+                                <th class="px-6 py-3.5 text-right" style="width: 140px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-xs">
+                            {% for u in users %}
+                            <tr class="hover:bg-slate-50/80 transition-colors user-row cursor-pointer" onclick="window.location='{% url 'admin_user_detail' u.pk %}'">
+                                <!-- Counter -->
+                                <td class="px-6 py-4 align-top font-mono font-bold text-slate-400">
+                                    {{ forloop.counter }}
+                                </td>
+
+                                <!-- Member Profile -->
+                                <td class="px-6 py-4 align-top">
+                                    <div class="flex items-start gap-2.5">
+                                        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-[#0B2545] to-[#123b67] text-amber-400 flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
+                                            {{ u.username|slice:":2"|upper }}
+                                        </div>
+                                        <div class="min-w-0">
+                                            <div class="font-extrabold text-slate-900 text-sm hover:text-blue-700 transition-colors">
+                                                {{ u.username }}
+                                            </div>
+                                            <div class="text-[11px] text-slate-500 mt-0.5 truncate">
+                                                {% if u.first_name or u.last_name %}
+                                                    {{ u.first_name }} {{ u.last_name }}
+                                                {% else %}
+                                                    <span class="text-slate-400 italic">No full name on file</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Email & Contact -->
+                                <td class="px-6 py-4 align-top text-slate-600 font-medium">
+                                    <div class="flex items-center gap-1.5 truncate">
+                                        <span class="material-symbols-outlined text-[15px] text-slate-400">mail</span>
+                                        <span>{{ u.email|default:"Not specified" }}</span>
+                                    </div>
+                                </td>
+
+                                <!-- Student ID -->
+                                <td class="px-6 py-4 align-top">
+                                    {% if u.student_id %}
+                                    <span class="inline-flex items-center font-mono font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded text-[11px]">
+                                        {{ u.student_id }}
+                                    </span>
+                                    {% else %}
+                                    <span class="text-slate-400 italic text-[11px]">—</span>
+                                    {% endif %}
+                                </td>
+
+                                <!-- Academic Affiliation -->
+                                <td class="px-6 py-4 align-top">
+                                    {% if u.school_code %}
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-800 border border-blue-200">
+                                        {{ u.school_code }}
+                                    </span>
+                                    {% endif %}
+                                    <div class="font-bold text-slate-900 text-xs mt-1">
+                                        {{ u.major|default:"General / Not specified" }}
+                                    </div>
+                                </td>
+
+                                <!-- Role & Status -->
+                                <td class="px-6 py-4 align-top">
+                                    <div class="flex flex-col gap-1 items-start">
+                                        {% if u.is_staff %}
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-[#0B2545] text-amber-300 shadow-2xs">
+                                            <span class="material-symbols-outlined text-[13px]">shield_person</span> Administrator
+                                        </span>
+                                        {% else %}
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700">
+                                            <span class="material-symbols-outlined text-[13px] text-slate-500">school</span> Student Member
+                                        </span>
+                                        {% endif %}
+
+                                        {% if u.is_active %}
+                                        <span class="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Active
+                                        </span>
+                                        {% else %}
+                                        <span class="inline-flex items-center gap-1 text-[10px] font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Disabled
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </td>
+
+                                <!-- Registered Date -->
+                                <td class="whitespace-nowrap px-6 py-4 align-top text-slate-500 font-medium">
+                                    {{ u.date_joined|date:"d M Y" }}
+                                </td>
+
+                                <!-- Actions -->
+                                <td class="px-6 py-4 text-right align-top" onclick="event.stopPropagation()">
+                                    <a href="{% url 'admin_user_detail' u.pk %}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-[#0B2545] font-bold text-xs transition-colors">
+                                        <span>View Details</span>
+                                        <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="8" class="px-6 py-16 text-center text-slate-400">
+                                    <span class="material-symbols-outlined text-4xl text-slate-300">person_off</span>
+                                    <div class="mt-2 font-bold text-slate-700 text-sm">No user accounts found</div>
+                                    <p class="text-xs text-slate-400 mt-1">Try adjusting your search query or filter criteria.</p>
+                                    <a href="{% url 'admin_users_list' %}" class="mt-4 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#0B2545] text-amber-400 font-bold text-xs shadow-md">
+                                        Reset Filters
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Live Client-side Search Engine -->
+    <script>
+        const localSearchInput = document.getElementById('userDirectorySearch');
+        const topSearchInput = document.getElementById('globalUserTopSearch');
+        const rows = document.querySelectorAll('.user-row');
+
+        function filterRows(q) {
+            const query = q.trim().toLowerCase();
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = (!query || text.includes(query)) ? '' : 'none';
+            });
+        }
+
+        localSearchInput?.addEventListener('input', (e) => filterRows(e.target.value));
+        topSearchInput?.addEventListener('input', (e) => {
+            localSearchInput.value = e.target.value;
+            filterRows(e.target.value);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,487 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% if event %}Edit Event{% else %}Add New Event{% endif %} - CampusPulse Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+    <style>body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F8FAFC; }</style>
+    <link rel="stylesheet" href="{% static 'api/admin.css' %}">
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-[#0B2545] text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <a href="/api/dashboard/" class="text-xl font-extrabold tracking-wider text-[#D4AF37]">CAMPUSPULSE</a>
+                <span class="bg-slate-800 text-xs px-2.5 py-1 rounded-full text-slate-300 font-semibold">Event Management</span>
+            </div>
+            <a href="/api/dashboard/" class="text-sm text-slate-300 hover:text-white transition">&larr; Back to Dashboard</a>
+        </div>
+    </nav>
+
+    <!-- Main Form Container -->
+    <main class="max-w-3xl mx-auto px-6 py-10">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8">
+            <h1 class="text-2xl font-bold text-[#0B2545] mb-2">{% if event %}Edit Event: {{ event.title }}{% else %}Create New Event or Activity{% endif %}</h1>
+            <p class="text-sm text-slate-500 mb-6">Fill in the details below. Department and school filters will automatically adapt to student feeds.</p>
+
+            {% if form and form.errors %}
+            <div class="mb-6 bg-red-50 border border-red-200 text-red-700 rounded-xl p-4 text-sm">
+                <p class="font-bold mb-1">Please fix the following errors:</p>
+                <ul class="list-disc list-inside space-y-1">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                        <li><strong>{{ field }}:</strong> {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Event Title</label>
+                    <input type="text" name="title" required value="{% if form.title.value %}{{ form.title.value }}{% elif event %}{{ event.title }}{% endif %}" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#0B2545] focus:outline-none text-slate-800 font-medium" placeholder="e.g. USIU CodeSprint 2026">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Department / Event Type</label>
+                        <select name="event_type" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#0B2545] focus:outline-none text-slate-800 bg-white">
+                            <option value="Academic" {% if event and event.event_type == 'Academic' %}selected{% endif %}>Academic</option>
+                            <option value="Career" {% if event and event.event_type == 'Career' %}selected{% endif %}>Career</option>
+                            <option value="Social" {% if event and event.event_type == 'Social' %}selected{% endif %}>Social</option>
+                            <option value="Sports" {% if event and event.event_type == 'Sports' %}selected{% endif %}>Sports</option>
+                            <option value="Wellness" {% if event and event.event_type == 'Wellness' %}selected{% endif %}>Wellness</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">School Code</label>
+                        <select name="school_code" id="school_code_select" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#0B2545] focus:outline-none text-slate-800 bg-white" onchange="updateMajors()">
+                            <option value="">Campus-wide (All Schools)</option>
+                            {% for school in schools %}
+                            <option value="{{ school.code }}" {% if event and event.school_code == school.code %}selected{% endif %}>{{ school.code }} - {{ school.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Major</label>
+                    <select name="major" id="major_select" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#0B2545] focus:outline-none text-slate-800 bg-white">
+                        <option value="">All Majors / General</option>
+                        {% if event and event.major %}
+                        <option value="{{ event.major }}" selected>{{ event.major }}</option>
+                        {% endif %}
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Start Date &amp; Time</label>
+                        <input type="datetime-local" name="start_time" value="{% if event and event.start_time %}{{ event.start_time|date:'Y-m-d\TH:i' }}{% endif %}" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#0B2545] focus:outline-none text-slate-800 font-medium">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">End Date &amp; Time</label>
+                        <input type="datetime-local" name="end_time" value="{% if event and event.end_time %}{{ event.end_time|date:'Y-m-d\TH:i' }}{% endif %}" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#0B2545] focus:outline-none text-slate-800 font-medium">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Venue</label>
+                        <select name="venue_select" id="venue_select" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#0B2545] focus:outline-none text-slate-800 bg-white mb-2" onchange="toggleCustomVenue()">
+                            <option value="Swimming Pool">Swimming Pool</option>
+                            <option value="Auditorium">Auditorium</option>
+                            <option value="Student Center">Student Center</option>
+                            <option value="SSHS Rooftop">SSHS Rooftop</option>
+                            <option value="SSHS LT7">SSHS LT7</option>
+                            <option value="SSHS LT8">SSHS LT8</option>
+                            <option value="Parking Lot A">Parking Lot A</option>
+                            <option value="Parking Lot B">Parking Lot B</option>
+                            <option value="Parking Lot C">Parking Lot C</option>
+                            <option value="School Pitch">School Pitch</option>
+                            <option value="Basketball Court">Basketball Court</option>
+                            <option value="CUSTOM">Custom / External Venue...</option>
+                        </select>
+                        <input type="text" name="custom_venue" id="custom_venue_input" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#0B2545] focus:outline-none text-slate-800 font-medium hidden" placeholder="Enter custom venue name">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Organizer</label>
+                        <input type="text" name="organizer" required value="{% if event %}{{ event.organizer }}{% else %}Student Council{% endif %}" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#0B2545] focus:outline-none text-slate-800 font-medium">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Total Seats</label>
+                        <input type="number" name="total_seats" id="total_seats" min="1" placeholder="Unlimited" value="{% if event.total_seats %}{{ event.total_seats }}{% endif %}" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#0B2545] focus:outline-none text-slate-800 font-medium" oninput="syncSeats()">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Seats Left (Dynamic)</label>
+                        <input type="text" id="seats_left" readonly value="{% if event.total_seats %}{{ event.seats_left }}{% else %}Unlimited{% endif %}" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-600 font-medium bg-slate-50">
+                        <p class="text-xs text-slate-400 mt-1">Leave total seats blank for unlimited capacity.</p>
+                    </div>
+                </div>
+
+                <div class="pt-4 pb-4 border-t border-slate-100">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Event Poster / Image</label>
+                    
+                    <!-- Mode Switcher Tabs -->
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        <button type="button" id="tab_upload" onclick="switchImageMode('upload')" class="image-mode-tab px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all bg-[#0B2545] text-[#D4AF37] shadow-sm">
+                            <span class="material-symbols-outlined text-[16px]">upload_file</span>
+                            <span>Upload File</span>
+                        </button>
+                        <button type="button" id="tab_link" onclick="switchImageMode('link')" class="image-mode-tab px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all bg-slate-100 text-slate-600 hover:bg-slate-200">
+                            <span class="material-symbols-outlined text-[16px]">link</span>
+                            <span>Paste Link (URL)</span>
+                        </button>
+                        <button type="button" id="tab_camera" onclick="switchImageMode('camera')" class="image-mode-tab px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all bg-slate-100 text-slate-600 hover:bg-slate-200">
+                            <span class="material-symbols-outlined text-[16px]">photo_camera</span>
+                            <span>Take a Picture</span>
+                        </button>
+                    </div>
+
+                    <!-- Panel 1: Upload File -->
+                    <div id="panel_upload" class="image-mode-panel">
+                        <input type="file" name="image" id="id_image_file" accept="image/*" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#0B2545] focus:outline-none text-slate-800 text-sm bg-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-[#0B2545] file:text-[#D4AF37] hover:file:bg-[#133863]" onchange="handleFileSelect(this)">
+                        <p class="text-xs text-slate-400 mt-1">Upload flyer/poster image from your device (JPEG, PNG, WebP).</p>
+                    </div>
+
+                    <!-- Panel 2: Paste Link -->
+                    <div id="panel_link" class="image-mode-panel hidden">
+                        <div class="relative">
+                            <input type="url" name="image_url" id="id_image_url" value="{% if event and event.image_url %}{{ event.image_url }}{% endif %}" placeholder="https://example.com/event-flyer.jpg" class="w-full pl-4 pr-24 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#0B2545] focus:outline-none text-slate-800 text-sm" oninput="handleUrlInput(this.value)">
+                            <button type="button" onclick="testUrlPreview()" class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition">Preview</button>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-1">Paste a direct web link to the image (e.g., Unsplash, Cloudinary, AWS S3).</p>
+                    </div>
+
+                    <!-- Panel 3: Take Picture (Camera) -->
+                    <div id="panel_camera" class="image-mode-panel hidden space-y-3">
+                        <div class="flex flex-wrap gap-2">
+                            <!-- Mobile native camera trigger -->
+                            <button type="button" onclick="document.getElementById('id_camera_capture').click()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold flex items-center gap-2 border border-slate-200 transition">
+                                <span class="material-symbols-outlined text-[18px] text-[#0B2545]">photo_camera</span>
+                                <span>Use Device Camera</span>
+                            </button>
+                            <input type="file" id="id_camera_capture" accept="image/*" capture="environment" class="hidden" onchange="handleCameraCapture(this)">
+
+                            <!-- Desktop / WebRTC live webcam trigger -->
+                            <button type="button" id="btn_toggle_webcam" onclick="toggleWebcam()" class="px-4 py-2 rounded-xl bg-[#0B2545] hover:bg-[#133863] text-[#D4AF37] text-xs font-bold flex items-center gap-2 transition shadow-sm">
+                                <span class="material-symbols-outlined text-[18px]">videocam</span>
+                                <span id="lbl_webcam">Open Webcam Stream</span>
+                            </button>
+                        </div>
+
+                        <!-- Live Webcam Viewport -->
+                        <div id="webcam_container" class="hidden p-3 bg-slate-900 rounded-2xl space-y-2">
+                            <video id="webcam_video" autoplay playsinline class="w-full max-h-64 object-cover rounded-xl bg-black"></video>
+                            <div class="flex justify-between items-center pt-1">
+                                <span class="text-xs text-slate-300">Live Camera Feed</span>
+                                <button type="button" onclick="snapWebcamPhoto()" class="px-4 py-1.5 bg-amber-400 hover:bg-amber-500 text-slate-900 text-xs font-extrabold rounded-lg flex items-center gap-1.5 transition">
+                                    <span class="material-symbols-outlined text-[16px]">camera</span>
+                                    <span>Snap Photo</span>
+                                </button>
+                            </div>
+                        </div>
+                        <canvas id="webcam_canvas" class="hidden"></canvas>
+                        <p class="text-xs text-slate-400">Take a picture directly using your smartphone camera or computer webcam.</p>
+                    </div>
+
+                    <!-- Live Image Preview Container -->
+                    <div id="image_preview_box" class="mt-3 p-3 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-between {% if not event or not event.image and not event.image_url %}hidden{% endif %}">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <img id="image_preview_thumb" src="{% if event and event.image %}{{ event.image.url }}{% elif event and event.image_url %}{{ event.image_url }}{% endif %}" class="w-14 h-14 rounded-lg object-cover border border-slate-200 shadow-sm shrink-0" alt="Preview">
+                            <div class="min-w-0">
+                                <div class="flex items-center gap-2">
+                                    <span id="image_source_badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-blue-100 text-[#0B2545]">
+                                        {% if event and event.image %}Current Upload{% elif event and event.image_url %}Web Link{% else %}Selected Image{% endif %}
+                                    </span>
+                                </div>
+                                <p id="image_preview_info" class="text-xs text-slate-600 truncate mt-0.5">
+                                    {% if event and event.image %}{{ event.image.name }}{% elif event and event.image_url %}{{ event.image_url }}{% else %}Ready for submission{% endif %}
+                                </p>
+                            </div>
+                        </div>
+                        <button type="button" onclick="clearSelectedImage()" class="p-1.5 text-slate-400 hover:text-red-600 rounded-lg transition" title="Clear image">
+                            <span class="material-symbols-outlined text-[18px]">close</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="pt-2 pb-2">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Event Video (Optional)</label>
+                    <input type="file" name="video" accept="video/mp4,video/mov,video/webm,video/m4v" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#0B2545] focus:outline-none text-slate-800 text-sm bg-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-[#0B2545] file:text-[#D4AF37] hover:file:bg-[#133863]">
+                    {% if event and event.video %}
+                    <p class="text-xs text-slate-500 mt-1">Current: <a href="{{ event.video.url }}" target="_blank" class="text-blue-600 underline">{{ event.video.name }}</a> (Upload new to replace)</p>
+                    {% else %}
+                    <p class="text-xs text-slate-400 mt-1">Max size: 50 MB. Formats: MP4, MOV, WEBM, M4V.</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Description</label>
+                    <textarea name="description" rows="4" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#0B2545] focus:outline-none text-slate-800 font-medium" placeholder="Provide event details, timing, and highlights...">{% if event %}{{ event.description }}{% endif %}</textarea>
+                </div>
+
+                <div class="flex justify-end space-x-4 pt-4 border-t border-slate-100">
+                    <a href="/api/dashboard/" class="px-6 py-3 rounded-xl font-bold text-sm text-slate-600 hover:bg-slate-100 transition">Cancel</a>
+                    <button type="submit" class="bg-[#0B2545] hover:bg-[#133863] text-[#D4AF37] px-8 py-3 rounded-xl font-bold text-sm shadow-md transition">Save Event</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        const schoolMajorsMap = {
+            {% for school in schools %}
+            "{{ school.code }}": [{% for m in school.get_majors_list %}"{{ m|escapejs }}"{% if not forloop.last %},{% endif %}{% endfor %}],
+            {% endfor %}
+        };
+
+        function updateMajors() {
+            const schoolCode = document.getElementById('school_code_select').value;
+            const majorSelect = document.getElementById('major_select');
+            majorSelect.innerHTML = '<option value="">All Majors / General</option>';
+
+            if (schoolMajorsMap[schoolCode]) {
+                schoolMajorsMap[schoolCode].forEach(major => {
+                    const opt = document.createElement('option');
+                    opt.value = major;
+                    opt.textContent = major;
+                    {% if event %}
+                    if (major === "{{ event.major|default:''|escapejs }}") opt.selected = true;
+                    {% endif %}
+                    majorSelect.appendChild(opt);
+                });
+            }
+        }
+
+        function syncSeats() {
+            const total = document.getElementById('total_seats').value.trim();
+            const remaining = document.getElementById('seats_left');
+            if (!total) {
+                remaining.value = 'Unlimited';
+            } else if (!{{ event|yesno:"true,false" }}) {
+                remaining.value = total;
+            }
+        }
+
+        function toggleCustomVenue() {
+            const venueSelect = document.getElementById('venue_select');
+            const customInput = document.getElementById('custom_venue_input');
+            if (venueSelect.value === 'CUSTOM') {
+                customInput.classList.remove('hidden');
+                customInput.required = true;
+            } else {
+                customInput.classList.add('hidden');
+                customInput.required = false;
+            }
+        }
+
+        updateMajors();
+        {% if event and event.venue %}
+        const venueSelect = document.getElementById('venue_select');
+        let found = false;
+        for (let i = 0; i < venueSelect.options.length; i++) {
+            if (venueSelect.options[i].value === "{{ event.venue|escapejs }}") {
+                venueSelect.selectedIndex = i;
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            venueSelect.value = 'CUSTOM';
+            const customInput = document.getElementById('custom_venue_input');
+            customInput.classList.remove('hidden');
+            customInput.value = "{{ event.venue|escapejs }}";
+        }
+        {% endif %}
+
+        // --- Photo Mode & Camera Handlers ---
+        let webcamStream = null;
+
+        function switchImageMode(mode) {
+            const tabs = {
+                upload: document.getElementById('tab_upload'),
+                link: document.getElementById('tab_link'),
+                camera: document.getElementById('tab_camera')
+            };
+            const panels = {
+                upload: document.getElementById('panel_upload'),
+                link: document.getElementById('panel_link'),
+                camera: document.getElementById('panel_camera')
+            };
+
+            for (const key in tabs) {
+                if (key === mode) {
+                    tabs[key].className = 'image-mode-tab px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all bg-[#0B2545] text-[#D4AF37] shadow-sm';
+                    panels[key].classList.remove('hidden');
+                } else {
+                    tabs[key].className = 'image-mode-tab px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all bg-slate-100 text-slate-600 hover:bg-slate-200';
+                    panels[key].classList.add('hidden');
+                }
+            }
+            if (mode !== 'camera' && webcamStream) {
+                stopWebcam();
+            }
+        }
+
+        function handleFileSelect(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    showPreview(e.target.result, 'Uploaded File', `${file.name} (${Math.round(file.size / 1024)} KB)`);
+                };
+                reader.readAsDataURL(file);
+                // Clear URL input if file is chosen
+                const urlInput = document.getElementById('id_image_url');
+                if (urlInput) urlInput.value = '';
+            }
+        }
+
+        function handleUrlInput(url) {
+            url = (url || '').trim();
+            if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+                showPreview(url, 'Web Link', url);
+                // Clear file input if url is entered
+                const fileInput = document.getElementById('id_image_file');
+                if (fileInput) fileInput.value = '';
+            } else if (!url) {
+                const previewBox = document.getElementById('image_preview_box');
+                previewBox.classList.add('hidden');
+            }
+        }
+
+        function testUrlPreview() {
+            const urlInput = document.getElementById('id_image_url');
+            if (urlInput && urlInput.value.trim()) {
+                handleUrlInput(urlInput.value);
+            }
+        }
+
+        function toggleWebcam() {
+            if (webcamStream) {
+                stopWebcam();
+            } else {
+                startWebcam();
+            }
+        }
+
+        function startWebcam() {
+            const container = document.getElementById('webcam_container');
+            const video = document.getElementById('webcam_video');
+            const lbl = document.getElementById('lbl_webcam');
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                alert('Webcam stream is not supported in this browser. Please use "Use Device Camera" instead.');
+                return;
+            }
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+                .then(function(stream) {
+                    webcamStream = stream;
+                    video.srcObject = stream;
+                    container.classList.remove('hidden');
+                    if (lbl) lbl.textContent = 'Close Webcam';
+                })
+                .catch(function(err) {
+                    console.error('Camera access error:', err);
+                    alert('Unable to access camera: ' + err.message);
+                });
+        }
+
+        function stopWebcam() {
+            if (webcamStream) {
+                webcamStream.getTracks().forEach(track => track.stop());
+                webcamStream = null;
+            }
+            const container = document.getElementById('webcam_container');
+            if (container) container.classList.add('hidden');
+            const lbl = document.getElementById('lbl_webcam');
+            if (lbl) lbl.textContent = 'Open Webcam Stream';
+        }
+
+        function snapWebcamPhoto() {
+            const video = document.getElementById('webcam_video');
+            const canvas = document.getElementById('webcam_canvas');
+            if (!video || !webcamStream) return;
+
+            canvas.width = video.videoWidth || 640;
+            canvas.height = video.videoHeight || 480;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            canvas.toBlob(function(blob) {
+                if (!blob) return;
+                const file = new File([blob], `poster_snapshot_${Date.now()}.jpg`, { type: 'image/jpeg' });
+                
+                // Assign to the main file input via DataTransfer
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                const fileInput = document.getElementById('id_image_file');
+                fileInput.files = dt.files;
+
+                // Show preview
+                showPreview(canvas.toDataURL('image/jpeg'), 'Camera Snapshot', `Captured Photo (${Math.round(file.size / 1024)} KB)`);
+
+                // Stop webcam
+                stopWebcam();
+            }, 'image/jpeg', 0.92);
+        }
+
+        function handleCameraCapture(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                const fileInput = document.getElementById('id_image_file');
+                fileInput.files = dt.files;
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    showPreview(e.target.result, 'Camera Photo', `Captured Photo (${Math.round(file.size / 1024)} KB)`);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function showPreview(src, badgeText, infoText) {
+            const previewBox = document.getElementById('image_preview_box');
+            const thumb = document.getElementById('image_preview_thumb');
+            const badge = document.getElementById('image_source_badge');
+            const info = document.getElementById('image_preview_info');
+
+            if (thumb) thumb.src = src;
+            if (badge) badge.textContent = badgeText;
+            if (info) info.textContent = infoText;
+            if (previewBox) previewBox.classList.remove('hidden');
+        }
+
+        function clearSelectedImage() {
+            const fileInput = document.getElementById('id_image_file');
+            const urlInput = document.getElementById('id_image_url');
+            const cameraCapture = document.getElementById('id_camera_capture');
+            const previewBox = document.getElementById('image_preview_box');
+
+            if (fileInput) fileInput.value = '';
+            if (urlInput) urlInput.value = '';
+            if (cameraCapture) cameraCapture.value = '';
+            if (previewBox) previewBox.classList.add('hidden');
+            stopWebcam();
+        }
+
+        // Auto-select Link tab if current event already has image_url
+        {% if event and event.image_url and not event.image %}
+        switchImageMode('link');
+        {% endif %}
+    </script>
+</body>
+</html>

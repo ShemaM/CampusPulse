@@ -1,0 +1,90 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RSVPs for {{ event.title }} - CampusPulse Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F8FAFC; }</style>
+    <link rel="stylesheet" href="{% static 'api/admin.css' %}">
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+    <nav class="bg-[#0B2545] text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <a href="/api/dashboard/" class="text-xl font-extrabold tracking-wider text-[#D4AF37]">CAMPUSPULSE</a>
+                <span class="bg-slate-800 text-xs px-2.5 py-1 rounded-full text-slate-300 font-semibold">Attendee Management</span>
+            </div>
+            <a href="/api/dashboard/" class="text-sm text-slate-300 hover:text-white transition">&larr; Back to Dashboard</a>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-6 py-8">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 mb-8 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold text-[#0B2545]">{{ event.title }}</h1>
+                <p class="text-sm text-slate-500 mt-1">Venue: {{ event.venue }} | Seats Left: {% if event.total_seats is None %}Unlimited{% else %}{{ event.seats_left }} / {{ event.total_seats }}{% endif %}</p>
+            </div>
+            <div>
+                <a href="/api/dashboard/events/{{ event.pk }}/rsvps/csv/" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 rounded-xl font-bold text-sm shadow-md transition inline-flex items-center space-x-2">
+                    <span>Export CSV</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center">
+                <h3 class="font-bold text-slate-800 text-lg">Attendee Registrations (RSVPs)</h3>
+                <span class="text-xs text-slate-400">Total: {{ rsvps.count }}</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 text-slate-500 text-xs font-bold uppercase tracking-wider">
+                            <th class="px-6 py-3">Attendee (User / Guest)</th>
+                            <th class="px-6 py-3">Student ID</th>
+                            <th class="px-6 py-3">Status</th>
+                            <th class="px-6 py-3">Notes</th>
+                            <th class="px-6 py-3">Timestamp</th>
+                            <th class="px-6 py-3 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-sm">
+                        {% for rsvp in rsvps %}
+                        <tr class="hover:bg-slate-50/50 transition">
+                            <td class="px-6 py-4 font-semibold text-slate-800">
+                                {% if rsvp.user %}{{ rsvp.user.username }} ({{ rsvp.user.email }}){% else %}{{ rsvp.guest_email }} (Guest){% endif %}
+                            </td>
+                            <td class="px-6 py-4 text-slate-600">{{ rsvp.user.student_id|default:rsvp.guest_student_id|default:"-" }}</td>
+                            <td class="px-6 py-4">
+                                <span class="px-3 py-1 rounded-full text-xs font-bold
+                                    {% if rsvp.status == 'CONFIRMED' %} bg-emerald-100 text-emerald-700
+                                    {% else %} bg-slate-100 text-slate-600 {% endif %}">
+                                    {{ rsvp.status }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-slate-600">{{ rsvp.notes|default:"-" }}</td>
+                            <td class="px-6 py-4 text-slate-500 text-xs">{{ rsvp.timestamp|date:"Y-m-d H:i" }}</td>
+                            <td class="px-6 py-4 text-right">
+                                {% if rsvp.status == 'CONFIRMED' %}
+                                <form method="POST" action="/api/dashboard/events/{{ event.pk }}/rsvps/{{ rsvp.pk }}/cancel/" class="inline">
+                                    {% csrf_token %}
+                                    <button type="submit" onclick="return confirm('Cancel this RSVP?')" class="text-red-600 hover:text-red-800 font-semibold text-xs bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition">Cancel RSVP</button>
+                                </form>
+                                {% else %}
+                                <span class="text-xs text-slate-400">Cancelled</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="px-6 py-8 text-center text-slate-400">No RSVPs recorded for this event yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

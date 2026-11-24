@@ -1,0 +1,272 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Detail: {{ target_user.username }} — CampusPulse Administration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+    <style>body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8f9ff; }</style>
+    <link rel="stylesheet" href="{% static 'api/admin.css' %}">
+</head>
+<body class="bg-[#f8f9ff] text-[#0b1c30] min-h-screen flex overflow-hidden antialiased font-sans">
+
+    <!-- Persistent Left Sidebar -->
+    <aside class="w-72 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 z-50 h-screen shadow-sm">
+        <div>
+            <div class="h-16 px-6 flex items-center gap-3 border-b border-slate-100">
+                <div class="w-9 h-9 rounded-xl bg-[#0B2545] flex items-center justify-center text-amber-400 font-extrabold shadow-sm">
+                    <span class="material-symbols-outlined text-[20px]">school</span>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-extrabold text-[#0B2545] text-base leading-none">CampusPulse</span>
+                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">USIU-AFRICA ADMINISTRATION</span>
+                </div>
+            </div>
+            <div class="px-4 py-3">
+                <div class="px-3 py-1 rounded-lg bg-slate-50 flex items-center justify-between">
+                    <span class="text-[11px] font-bold text-slate-500 uppercase">Admin Portal</span>
+                    <span class="px-2 py-0.5 rounded-full bg-blue-100 text-[#0B2545] text-[10px] font-bold">Active</span>
+                </div>
+            </div>
+            <nav class="px-4 py-2 space-y-1">
+                <a href="/api/dashboard/" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-sm transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">dashboard</span>Overview
+                </a>
+                <a href="/api/dashboard/events/" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-sm transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">event</span>Events Management
+                </a>
+                <a href="/api/dashboard/rsvps/" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-sm transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">how_to_reg</span>Attendee &amp; RSVP Ledger
+                </a>
+                <a href="/api/dashboard/users/" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-[#0B2545] text-white font-bold shadow-sm text-sm">
+                    <span class="material-symbols-outlined text-[20px]">group</span>User Directory
+                </a>
+                <a href="/api/dashboard/conflicts/" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-sm transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">pending_actions</span>Timetable Conflicts
+                </a>
+            </nav>
+        </div>
+        <div class="p-4 bg-slate-50 m-4 rounded-xl border border-slate-100">
+            <div class="flex items-center gap-2 mb-1">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span class="text-xs font-bold text-slate-800">Inspection Mode</span>
+            </div>
+            <p class="text-[11px] text-slate-500 truncate">Read-Only View</p>
+        </div>
+    </aside>
+
+    <!-- Main Content Wrapper -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden h-screen">
+        <header class="h-16 bg-white/90 backdrop-blur-xl border-b border-slate-200 px-8 flex items-center justify-between shrink-0 z-40">
+            <div class="flex items-center gap-3">
+                <a href="{% url 'admin_users_list' %}" class="text-xs font-bold text-slate-600 hover:text-[#0B2545] transition flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">arrow_back</span> Back to User Directory
+                </a>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="hidden xl:flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold">
+                    <span class="material-symbols-outlined text-slate-500 text-[16px]">calendar_today</span><span>Fall Semester 2026 (AY 2026/2027)</span>
+                </div>
+                <div class="flex items-center gap-2 pl-3 border-l border-slate-200">
+                    <div class="text-right">
+                        <div class="text-xs font-bold text-slate-900 leading-tight">{{ request.user.username }}</div>
+                        <div class="text-[10px] text-slate-500 leading-tight">Administrator</div>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-[#0B2545] text-amber-400 flex items-center justify-center font-bold text-xs">
+                        {{ request.user.username|slice:":2"|upper }}
+                    </div>
+                    <form method="post" action="{% url 'staff_logout' %}" class="inline">{% csrf_token %}<button type="submit" class="text-xs font-bold text-red-600 hover:text-red-800 ml-2">Logout</button></form>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-8 bg-[#f8f9ff] space-y-8">
+
+            <!-- Profile Header Card -->
+            <div class="p-8 rounded-3xl bg-white border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-6">
+                <div class="flex items-center gap-5">
+                    <div class="w-16 h-16 rounded-2xl bg-[#0B2545] text-amber-400 flex items-center justify-center font-extrabold text-2xl shadow-md">
+                        {{ target_user.username|slice:":2"|upper }}
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <h1 class="text-2xl font-extrabold text-slate-900">{{ target_user.username }}</h1>
+                            {% if target_user.is_staff %}
+                            <span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700">Administrator</span>
+                            {% else %}
+                            <span class="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700">Student Member</span>
+                            {% endif %}
+                            {% if target_user.is_active %}
+                            <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">Active</span>
+                            {% else %}
+                            <span class="px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800">Inactive</span>
+                            {% endif %}
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1">Full Name: <strong class="text-slate-800">{% if target_user.first_name or target_user.last_name %}{{ target_user.first_name }} {{ target_user.last_name }}{% else %}Not specified{% endif %}</strong></p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div class="text-xs text-slate-400 uppercase font-bold tracking-wider">Account ID</div>
+                    <div class="text-lg font-mono font-bold text-[#0B2545]">#{{ target_user.pk }}</div>
+                </div>
+            </div>
+
+            <!-- Details Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <!-- Personal Info Card -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="font-extrabold text-slate-900 text-base border-b border-slate-100 pb-3 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[20px] text-[#0B2545]">badge</span> Account Details
+                    </h3>
+                    <div class="space-y-3 text-xs">
+                        <div>
+                            <span class="text-slate-400 font-bold block uppercase">Email Address</span>
+                            <span class="font-medium text-slate-800 text-sm">{{ target_user.email|default:"No email registered" }}</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 font-bold block uppercase">Student ID</span>
+                            <span class="font-mono font-semibold text-slate-800 text-sm">{{ target_user.student_id|default:"Not specified" }}</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 font-bold block uppercase">School Affiliation</span>
+                            <span class="font-semibold text-slate-800 text-sm">{{ target_user.school_code|default:"Campus-wide" }}</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 font-bold block uppercase">Major / Field of Study</span>
+                            <span class="font-medium text-slate-800 text-sm">{{ target_user.major|default:"Not specified" }}</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 font-bold block uppercase">Registration Date</span>
+                            <span class="font-medium text-slate-800">{{ target_user.date_joined|date:"F j, Y, g:i a" }}</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 font-bold block uppercase">Last Login</span>
+                            <span class="font-medium text-slate-800">{% if target_user.last_login %}{{ target_user.last_login|date:"F j, Y, g:i a" }}{% else %}Never logged in{% endif %}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RSVPs & Participation Card -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4 md:col-span-2">
+                    <h3 class="font-extrabold text-slate-900 text-base border-b border-slate-100 pb-3 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[20px] text-[#0B2545]">how_to_reg</span> Event RSVPs &amp; History ({{ rsvps.count }})
+                    </h3>
+                    <div class="overflow-x-auto max-h-72 overflow-y-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 text-slate-500 text-[11px] font-bold uppercase tracking-wider">
+                                    <th class="px-4 py-2.5">Event Title</th>
+                                    <th class="px-4 py-2.5">Venue &amp; Time</th>
+                                    <th class="px-4 py-2.5">Status</th>
+                                    <th class="px-4 py-2.5">Registered At</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-xs">
+                                {% for rsvp in rsvps %}
+                                <tr class="hover:bg-slate-50 transition">
+                                    <td class="px-4 py-3 font-bold text-slate-900">{{ rsvp.event.title }}</td>
+                                    <td class="px-4 py-3 text-slate-600">
+                                        <div class="flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-[13px] text-slate-400">location_on</span>
+                                            <span>{{ rsvp.event.venue }}</span>
+                                        </div>
+                                        <div class="text-[10px] text-slate-400">{{ rsvp.event.start_time|date:"M j, Y \u00B7 g:i A" }}</div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold {% if rsvp.status == 'CONFIRMED' %}bg-emerald-100 text-emerald-800{% else %}bg-slate-100 text-slate-600{% endif %}">
+                                            {{ rsvp.status }}
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-3 text-slate-500 text-[11px]">{{ rsvp.timestamp|date:"M j, Y H:i" }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="px-4 py-8 text-center text-slate-400 text-xs">No event RSVPs recorded for this user yet.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Schedules & Bookmarks Row -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <!-- Class Schedules -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="font-extrabold text-slate-900 text-base border-b border-slate-100 pb-3 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[20px] text-[#0B2545]">schedule</span> Class Schedule ({{ schedules.count }})
+                    </h3>
+                    <div class="overflow-x-auto max-h-60 overflow-y-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 text-slate-500 text-[11px] font-bold uppercase tracking-wider">
+                                    <th class="px-4 py-2">Day</th>
+                                    <th class="px-4 py-2">Time Slot</th>
+                                    <th class="px-4 py-2">Course Name</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-xs">
+                                {% for sch in schedules %}
+                                <tr class="hover:bg-slate-50 transition">
+                                    <td class="px-4 py-2.5 font-bold text-slate-800">{{ sch.day_of_week }}</td>
+                                    <td class="px-4 py-2.5 font-mono text-slate-600">{{ sch.start_time|time:"H:i" }} - {{ sch.end_time|time:"H:i" }}</td>
+                                    <td class="px-4 py-2.5 font-semibold text-slate-900">{{ sch.course_name }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3" class="px-4 py-6 text-center text-slate-400 text-xs">No class schedules recorded.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Bookmarked Events -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="font-extrabold text-slate-900 text-base border-b border-slate-100 pb-3 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[20px] text-[#0B2545]">bookmark</span> Bookmarked Events ({{ bookmarks.count }})
+                    </h3>
+                    <div class="overflow-x-auto max-h-60 overflow-y-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 text-slate-500 text-[11px] font-bold uppercase tracking-wider">
+                                    <th class="px-4 py-2">Event Title</th>
+                                    <th class="px-4 py-2">Venue</th>
+                                    <th class="px-4 py-2">Saved At</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-xs">
+                                {% for bm in bookmarks %}
+                                <tr class="hover:bg-slate-50 transition">
+                                    <td class="px-4 py-2.5 font-bold text-slate-900">{{ bm.event.title }}</td>
+                                    <td class="px-4 py-2.5 text-slate-600">
+                                        <div class="flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-[13px] text-slate-400">location_on</span>
+                                            <span>{{ bm.event.venue }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-2.5 text-slate-500 text-[11px]">{{ bm.timestamp|date:"M j, Y" }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3" class="px-4 py-6 text-center text-slate-400 text-xs">No bookmarked events.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+</body>
+</html>

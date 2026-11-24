@@ -1,0 +1,74 @@
+﻿# Android / Gradle
+*.iml
+.gradle/
+**/build/
+local.properties
+.externalNativeBuild/
+.cxx/
+captures/
+
+# Android Studio
+.idea/caches/
+.idea/libraries/
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+
+# Python / Django
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+backend/venv/
+backend/.venv/
+
+# Databases and backups
+*.sqlite3
+*.sqlite3-journal
+db.sqlite3
+*.db
+*.bak
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Logs and crash reports
+*.log
+hs_err_pid*.log
+
+# Temporary audit and inspection files
+audit_dump.txt
+audit_part*.txt
+dump.xml
+focus.xml
+focus_now.xml
+notif_dump.xml
+now.xml
+now2.xml
+ready.xml
+paste_me*.txt
+
+# Generated artifacts
+.artifacts/
+.DS_Store
+Thumbs.db
+
+# IDE configuration
+.idea/
+
+# Design backups
+design_backup/
+
+# Database backup files
+*.bak*
+*.sqlite3*
+
+# Historical migration backups
+backend/migrations-backup-*/

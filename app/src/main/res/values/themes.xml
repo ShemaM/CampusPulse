@@ -1,0 +1,110 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.CampusPulse" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/usiu_navy</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/usiu_navy_light</item>
+        <item name="colorOnPrimaryContainer">@color/white</item>
+        <item name="colorSecondary">@color/usiu_gold</item>
+        <item name="colorOnSecondary">@color/usiu_navy</item>
+        <item name="colorSecondaryContainer">@color/usiu_gold_soft</item>
+        <item name="colorOnSecondaryContainer">@color/usiu_navy</item>
+        <item name="android:windowBackground">@color/surface_soft</item>
+        <item name="colorSurface">@color/surface_card</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="elevationOverlayEnabled">false</item>
+
+        <!-- Typography: Inter -->
+        <item name="fontFamily">@font/inter</item>
+        <item name="android:fontFamily">@font/inter</item>
+        <item name="android:textViewStyle">@style/Widget.CampusPulse.TextView</item>
+        <item name="materialButtonStyle">@style/Widget.CampusPulse.Button</item>
+        <item name="textAppearanceHeadlineLarge">@style/TextAppearance.CampusPulse.HeadlineLarge</item>
+        <item name="textAppearanceHeadlineMedium">@style/TextAppearance.CampusPulse.HeadlineMedium</item>
+        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.CampusPulse.HeadlineSmall</item>
+        <item name="textAppearanceTitleLarge">@style/TextAppearance.CampusPulse.TitleLarge</item>
+        <item name="textAppearanceTitleMedium">@style/TextAppearance.CampusPulse.TitleMedium</item>
+        <item name="textAppearanceTitleSmall">@style/TextAppearance.CampusPulse.TitleSmall</item>
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.CampusPulse.BodyLarge</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.CampusPulse.BodyMedium</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.CampusPulse.BodySmall</item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.CampusPulse.LabelLarge</item>
+        <item name="textAppearanceLabelMedium">@style/TextAppearance.CampusPulse.LabelMedium</item>
+        <item name="textAppearanceLabelSmall">@style/TextAppearance.CampusPulse.LabelSmall</item>
+    </style>
+
+    <style name="Widget.CampusPulse.TextView" parent="android:Widget.TextView">
+        <item name="fontFamily">@font/inter</item>
+        <item name="android:fontFamily">@font/inter</item>
+    </style>
+
+    <style name="Widget.CampusPulse.Button" parent="Widget.Material3.Button">
+        <item name="fontFamily">@font/inter</item>
+        <item name="android:fontFamily">@font/inter</item>
+    </style>
+
+    <style name="TextAppearance.CampusPulse.HeadlineLarge" parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="fontFamily">@font/inter</item>
+        <item name="android:fontFamily">@font/inter</item>
+    </style>
+
+    <style name="TextAppearance.CampusPulse.HeadlineMedium" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="fontFamily">@font/inter</item>
+        <item name="android:fontFamily">@font/inter</item>
+    </style>
+
+    <style name="TextAppearance.CampusPulse.HeadlineSmall" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="fontFamily">@font/inter</item>
+        <item name="android:fontFamily">@font/inter</item>
+    </style>
+
+    <style name="TextAppearance.CampusPulse.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
+        <item name="fontFamily">@font/inter</item>
+        <item name="android:fontFamily">@font/inter</item>
+    </style>
+
+    <style name="TextAppearance.CampusPulse.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
+        <item name="fontFamily">@font/inter</item>
+        <item name="android:fontFamily">@font/inter</item>
+    </style>
+
+    <style name="TextAppearance.CampusPulse.TitleSmall" parent="TextAppearance.Material3.TitleSmall">
+        <item name="fontFamily">@font/inter</item>
+        <item name="android:fontFamily">@font/inter</item>
+    </style>
+
+    <style name="TextAppearance.CampusPulse.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
+        <item name="fontFamily">@font/inter</item>
+        <item name="android:fontFamily">@font/inter</item>
+    </style>
+
+    <style name="TextAppearance.CampusPulse.BodyMedium" parent="TextAppearance.Material3.BodyMedium">
+        <item name="fontFamily">@font/inter</item>
+        <item name="android:fontFamily">@font/inter</item>
+    </style>
+
+    <style name="TextAppearance.CampusPulse.BodySmall" parent="TextAppearance.Material3.BodySmall">
+        <item name="fontFamily">@font/inter</item>
+        <item name="android:fontFamily">@font/inter</item>
+    </style>
+
+    <style name="TextAppearance.CampusPulse.LabelLarge" parent="TextAppearance.Material3.LabelLarge">
+        <item name="fontFamily">@font/inter</item>
+        <item name="android:fontFamily">@font/inter</item>
+    </style>
+
+    <style name="TextAppearance.CampusPulse.LabelMedium" parent="TextAppearance.Material3.LabelMedium">
+        <item name="fontFamily">@font/inter</item>
+        <item name="android:fontFamily">@font/inter</item>
+    </style>
+
+    <style name="TextAppearance.CampusPulse.LabelSmall" parent="TextAppearance.Material3.LabelSmall">
+        <item name="fontFamily">@font/inter</item>
+        <item name="android:fontFamily">@font/inter</item>
+    </style>
+
+    <style name="Widget.CampusPulse.BottomNav.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">#0D3D63</item>
+        <item name="android:width">44dp</item>
+        <item name="android:height">32dp</item>
+    </style>
+</resources>

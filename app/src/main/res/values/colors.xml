@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Brand: CampusPulse & USIU-Africa Institutional Palette -->
+    <color name="usiu_navy">#002B49</color>
+    <color name="usiu_navy_dark">#001A2D</color>
+    <color name="usiu_navy_light">#0B4A73</color>
+    <color name="usiu_gold">#F2A900</color>
+    <color name="usiu_gold_soft">#FFF3D1</color>
+    <color name="gold_accent">#D99400</color>
+
+    <!-- Festive Holiday Festival Accents -->
+    <color name="festive_pine">#1B4D3E</color>
+    <color name="festive_pine_soft">#E6F2EE</color>
+    <color name="festive_cranberry">#9E2A2B</color>
+    <color name="festive_cranberry_soft">#FBEAEA</color>
+    <color name="festive_snow_surface">#F5F7FA</color>
+    <color name="festive_gold_border">#E3E8EE</color>
+
+    <!-- Surfaces and Typography: High-Contrast USIU-Africa Campus Palette -->
+    <color name="surface_soft">#F4F6FA</color>
+    <color name="surface_card">#FFFFFF</color>
+    <color name="surface_variant">#E6ECF5</color>
+    <color name="text_primary">#00182E</color>
+    <color name="text_secondary">#26384A</color>
+    <color name="text_tertiary">#4A6075</color>
+    <color name="divider">#D6E0EC</color>
+
+    <!-- Institutional Status Tokens -->
+    <color name="status_success">#1E8E5A</color>
+    <color name="status_success_soft">#E6F7ED</color>
+    <color name="status_warning">#D98200</color>
+    <color name="status_warning_soft">#FFF8E6</color>
+    <color name="status_danger">#C62828</color>
+    <color name="status_danger_soft">#FDF2F2</color>
+    <color name="status_info">#1D68BD</color>
+    <color name="status_info_soft">#EDF4FC</color>
+
+    <!-- Semantic Badge Tokens -->
+    <color name="badge_gold_bg">#FFF8E6</color>
+    <color name="badge_gold_text">#8A5600</color>
+    <color name="badge_navy_bg">#E6EEF5</color>
+    <color name="badge_navy_text">#002B49</color>
+
+    <!-- Distinct Entity Palette for Event Logistics (Time, Venue, Category) -->
+    <color name="entity_time_text">#002B49</color>
+    <color name="entity_time_icon">#002B49</color>
+    <color name="entity_time_bg">#E6EEF5</color>
+    <color name="entity_venue_text">#8A5600</color>
+    <color name="entity_venue_icon">#D99400</color>
+    <color name="entity_venue_bg">#FFF8E6</color>
+</resources>

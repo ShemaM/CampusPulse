@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+{% load static %}<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CampusPulse Admin{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'api/admin.css' %}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=Material+Symbols+Outlined" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#001026',
+                        'primary-container': '#0b2545',
+                        secondary: '#3b608c',
+                        'secondary-container': '#a7ccfe',
+                        'tertiary-container': '#cba72f',
+                        'tertiary-fixed': '#ffe088',
+                        'on-tertiary-fixed': '#241a00',
+                        'secondary-fixed': '#d2e4ff',
+                        'on-secondary-fixed': '#001c37',
+                        'surface-container': '#e5eeff',
+                        'surface-container-low': '#eff4ff',
+                        'surface-container-lowest': '#ffffff',
+                        'surface-container-high': '#dce9ff',
+                        'outline-variant': '#c4c6cf',
+                        'tertiary-fixed': '#ffe088',
+                        'on-tertiary-fixed': '#241a00',
+                        'secondary-fixed': '#d2e4ff',
+                        'on-secondary-fixed': '#001c37',
+                        'surface-container': '#e5eeff',
+                        'surface-container-low': '#eff4ff',
+                        'surface-container-lowest': '#ffffff',
+                        'surface-container-high': '#dce9ff',
+                        'outline-variant': '#c4c6cf',
+                        'tertiary-fixed': '#ffe088',
+                        'on-tertiary-fixed': '#241a00',
+                        'secondary-fixed': '#d2e4ff',
+                        'on-secondary-fixed': '#001c37',
+                        'surface-container': '#e5eeff',
+                        'surface-container-low': '#eff4ff',
+                        'surface-container-lowest': '#ffffff',
+                        'surface-container-high': '#dce9ff',
+                        'outline-variant': '#c4c6cf',
+                        background: '#f8f9ff',
+                        surface: '#f8f9ff',
+                        'surface-low': '#eff4ff',
+                        'on-surface': '#0b1c30',
+                        'on-surface-variant': '#44474e'
+                    },
+                    fontFamily: {
+                        body: ['Inter', 'sans-serif'],
+                        heading: ['Plus Jakarta Sans', 'sans-serif']
+                    }
+                }
+            }
+        };
+    </script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4 { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body class="bg-background text-on-surface antialiased">
+
+    <aside class="cp-sidebar fixed inset-y-0 left-0 z-40 hidden w-72 flex-col border-r border-outline-variant/40 bg-surface-container-lowest lg:flex">
+        <div class="flex h-20 items-center gap-3 border-b border-outline-variant/30 bg-surface-container-lowest px-7">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-container text-tertiary-fixed">
+                <span class="material-symbols-outlined">school</span>
+            </div>
+            <div>
+                <h1 class="font-heading text-lg font-extrabold tracking-tight">CampusPulse</h1>
+                <p class="text-xs font-medium text-on-surface-variant">Administration</p>
+            </div>
+        </div>
+
+        <nav class="flex-1 space-y-2 overflow-y-auto px-4 py-6">
+            <p class="mb-3 px-3 text-xs font-bold uppercase tracking-widest text-on-surface-variant">Workspace</p>
+
+            <a href="{% url 'admin_dashboard' %}"
+               class="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-colors {% if active_page == 'overview' %}bg-primary-container text-tertiary-fixed{% else %}text-on-surface-variant hover:bg-surface-low{% endif %}">
+                <span class="material-symbols-outlined">dashboard</span>
+                Overview
+            </a>
+
+            <a href="{% url 'admin_events_management' %}"
+               class="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-colors {% if active_page == 'events' %}bg-primary-container text-tertiary-fixed{% else %}text-on-surface-variant hover:bg-surface-low{% endif %}">
+                <span class="material-symbols-outlined">event</span>
+                Events Management
+            </a>
+
+            <a href="{% url 'admin_rsvps_ledger' %}"
+               class="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-colors {% if active_page == 'rsvps' %}bg-primary-container text-tertiary-fixed{% else %}text-on-surface-variant hover:bg-surface-low{% endif %}">
+                <span class="material-symbols-outlined">how_to_reg</span>
+                Attendee &amp; RSVP Ledger
+            </a>
+
+            <a href="{% url 'admin_users_list' %}"
+               class="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-colors {% if active_page == 'users' %}bg-primary-container text-tertiary-fixed{% else %}text-on-surface-variant hover:bg-surface-low{% endif %}">
+                <span class="material-symbols-outlined">group</span>
+                User Directory
+            </a>
+
+            <a href="{% url 'admin_timetable_conflicts' %}"
+               class="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-colors {% if active_page == 'conflicts' %}bg-primary-container text-tertiary-fixed{% else %}text-on-surface-variant hover:bg-surface-low{% endif %}">
+                <span class="material-symbols-outlined">calendar_view_week</span>
+                Timetable Conflicts
+            </a>
+        </nav>
+
+        <div class="border-t border-outline-variant/30 bg-surface-container-low p-5">
+            <div class="mb-4 flex items-center gap-3">
+                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-tertiary-fixed font-bold text-on-tertiary-fixed">
+                    {{ request.user.username|first|upper }}
+                </div>
+                <div class="min-w-0">
+                    <p class="truncate text-sm font-bold">{{ request.user.username }}</p>
+                    <p class="text-xs text-on-surface-variant">Staff account</p>
+                </div>
+            </div>
+
+            <form method="post" action="{% url 'staff_logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-red-700 transition-colors hover:bg-red-50">
+                    <span class="material-symbols-outlined">logout</span>
+                    Sign out
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <div class="min-h-screen lg:pl-72">
+        <header class="cp-topbar sticky top-0 z-30 flex h-20 items-center justify-between border-b border-outline-variant/40 bg-surface-container-lowest/95 px-6 backdrop-blur">
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-widest text-secondary">CampusPulse / Administration</p>
+                <h2 class="mt-1 font-heading text-lg font-bold">{% block page_heading %}Overview{% endblock %}</h2>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="hidden text-sm text-on-surface-variant sm:inline">Welcome, {{ request.user.username }}</span>
+                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-secondary-fixed text-on-secondary-fixed">
+                    <span class="material-symbols-outlined">account_circle</span>
+                </div>
+            </div>
+        </header>
+
+        <nav class="cp-mobile-nav" aria-label="Main navigation">
+            <a href="{% url 'admin_dashboard' %}" class="{% if active_page == 'overview' %}is-active{% endif %}"><span class="material-symbols-outlined">dashboard</span><span>Overview</span></a>
+            <a href="{% url 'admin_events_management' %}" class="{% if active_page == 'events' %}is-active{% endif %}"><span class="material-symbols-outlined">event</span><span>Events</span></a>
+            <a href="{% url 'admin_rsvps_ledger' %}" class="{% if active_page == 'rsvps' %}is-active{% endif %}"><span class="material-symbols-outlined">how_to_reg</span><span>RSVPs</span></a>
+            <a href="{% url 'admin_users_list' %}" class="{% if active_page == 'users' %}is-active{% endif %}"><span class="material-symbols-outlined">group</span><span>People</span></a>
+            <a href="{% url 'admin_timetable_conflicts' %}" class="{% if active_page == 'conflicts' %}is-active{% endif %}"><span class="material-symbols-outlined">calendar_view_week</span><span>Conflicts</span></a>
+        </nav>
+
+        <main class="p-5 sm:p-8">
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer class="border-t border-outline-variant/40 bg-surface-container-lowest px-8 py-5 text-xs text-on-surface-variant">
+            CampusPulse Administration
+        </footer>
+    </div>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
+

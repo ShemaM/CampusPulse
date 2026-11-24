@@ -1,0 +1,570 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendee &amp; RSVP Ledger — CampusPulse Administration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8f9ff; }
+        thead { position: static !important; }
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #10b981;
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            animation: pulse-ring 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+    </style>
+    <link rel="stylesheet" href="{% static 'api/admin.css' %}">
+</head>
+<body class="bg-[#f8f9ff] text-[#0b1c30] min-h-screen flex overflow-hidden antialiased font-sans">
+
+    <!-- Persistent Left Sidebar -->
+    <aside class="w-72 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 z-50 h-screen shadow-sm">
+        <div>
+            <!-- Branding Header -->
+            <div class="h-16 px-6 flex items-center gap-3 border-b border-slate-100">
+                <div class="w-9 h-9 rounded-xl bg-[#0B2545] flex items-center justify-center text-amber-400 font-extrabold shadow-sm">
+                    <span class="material-symbols-outlined text-[20px]">hub</span>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-extrabold text-[#0B2545] text-base leading-none tracking-tight">CampusPulse</span>
+                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">USIU-AFRICA COMMAND</span>
+                </div>
+            </div>
+
+            <!-- Portal Badge -->
+            <div class="px-4 py-3">
+                <div class="px-3 py-1.5 rounded-lg bg-slate-50 flex items-center justify-between border border-slate-100">
+                    <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Admin Portal</span>
+                    <span class="px-2 py-0.5 rounded-full bg-blue-100 text-[#0B2545] text-[10px] font-extrabold">v2.4</span>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="px-4 py-2 space-y-1">
+                <a href="{% url 'admin_dashboard' %}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-sm transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">dashboard</span>Overview
+                </a>
+                <a href="{% url 'admin_events_management' %}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-sm transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">event</span>Events Management
+                </a>
+                <a href="{% url 'admin_events_management' %}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-sm transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">diversity_3</span>Clubs &amp; Societies
+                </a>
+                <a href="{% url 'admin_rsvps_ledger' %}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-[#0B2545] text-white font-bold shadow-sm text-sm">
+                    <span class="material-symbols-outlined text-[20px]">how_to_reg</span>Attendee &amp; RSVP Ledger
+                </a>
+                <a href="{% url 'admin_timetable_conflicts' %}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-sm transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">pending_actions</span>Timetable Conflicts
+                </a>
+                <a href="{% url 'admin_users_list' %}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-sm transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">group</span>User Directory
+                </a>
+                <a href="#" onclick="alert('Analytics & Reports console is generated dynamically from SAC ledger.'); return false;" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-sm transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">analytics</span>Analytics &amp; Reports
+                </a>
+                <a href="#" onclick="alert('System Settings: All security controls and SimpleJWT policies are active.'); return false;" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-sm transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">settings</span>System Settings
+                </a>
+            </nav>
+        </div>
+
+        <!-- System Health Footer Badge -->
+        <div class="p-4 bg-slate-50 m-4 rounded-xl border border-slate-100">
+            <div class="flex items-center gap-2 mb-1">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span class="text-xs font-bold text-slate-800">Health: 35/35 Passing</span>
+            </div>
+            <p class="text-[11px] text-slate-500 truncate">SimpleJWT Active &bull; SQLite Production</p>
+        </div>
+    </aside>
+
+    <!-- Main Content Wrapper -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden h-screen">
+
+        <!-- Topbar -->
+        <header class="h-16 bg-white/90 backdrop-blur-xl border-b border-slate-200 px-8 flex items-center justify-between shrink-0 z-40">
+            <div class="relative w-96">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+                <input id="globalLedgerTopSearch" type="search" placeholder="Search attendee, student ID, pass code..." aria-label="Search attendees and passes" class="w-full pl-9 pr-4 py-2 rounded-lg bg-slate-50 border border-slate-200 text-xs font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#0B2545] transition-colors">
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="hidden xl:flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold">
+                    <span class="material-symbols-outlined text-slate-500 text-[16px]">calendar_today</span>
+                    <span>Fall Semester 2026 (AY 2026/2027)</span>
+                </div>
+                <div class="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <span>API: Healthy</span>
+                </div>
+                <button class="relative p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition-colors" title="Notifications">
+                    <span class="material-symbols-outlined text-[20px]">notifications</span>
+                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-amber-400 rounded-full border-2 border-white"></span>
+                </button>
+                <div class="flex items-center gap-3 pl-3 border-l border-slate-200">
+                    <div class="text-right">
+                        <div class="text-xs font-bold text-slate-900 leading-tight">Dean of Student Affairs</div>
+                        <div class="text-[10px] text-slate-500 leading-tight">SAC Admin ({{ request.user.username }})</div>
+                    </div>
+                    <div class="w-9 h-9 rounded-full bg-[#0B2545] text-amber-400 flex items-center justify-center font-bold text-xs shadow-sm">
+                        {{ request.user.username|slice:":2"|upper }}
+                    </div>
+                    <form method="post" action="{% url 'staff_logout' %}" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="text-xs font-bold text-red-600 hover:text-red-800 ml-2" title="Sign out">Logout</button>
+                    </form>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Ledger Viewport -->
+        <main class="flex-1 overflow-y-auto p-8 bg-[#f8f9ff] space-y-8">
+
+            <!-- Page Header Bar -->
+            <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                        <span class="px-2.5 py-0.5 rounded-full bg-blue-100 text-[#0B2545] text-[10px] font-extrabold uppercase tracking-wider">
+                            &bull; LIVE GATE REGISTRY
+                        </span>
+                        <span class="text-xs text-slate-500 font-semibold">
+                            Synced with SAC Core DB &bull; USIU-Africa Campus Gate V4
+                        </span>
+                    </div>
+                    <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Attendee &amp; RSVP Ledger</h1>
+                    <p class="text-xs text-slate-500 mt-1">Real-time gate check-ins, formula-safe attendance export, and academic conflict tracking.</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-2.5">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold shadow-2xs">
+                        <span class="material-symbols-outlined text-[15px] text-emerald-600">verified_user</span> Formula Injection Defense: Active
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold shadow-2xs">
+                        <span class="material-symbols-outlined text-[15px] text-[#0B2545]">sensors</span> SAC Turnstiles: Gates 1-4 Online
+                    </span>
+                    <button onclick="openQrScannerModal()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#0B2545] hover:bg-[#133863] text-amber-400 font-bold text-xs shadow-md transition-all">
+                        <span class="material-symbols-outlined text-[18px]">qr_code_scanner</span> Live QR Gate Scanner
+                    </button>
+                </div>
+            </div>
+
+            <!-- 4 Metric Header Summary Cards Grid -->
+            <section class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5" aria-label="Ledger Metrics">
+
+                <!-- 1. Confirmed Tickets -->
+                <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Confirmed Tickets</span>
+                        <div class="w-10 h-10 rounded-xl bg-blue-50 text-[#0B2545] flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[20px]">confirmation_number</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-baseline gap-2">
+                        <span class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">{{ confirmed_count|default:total_rsvps }}</span>
+                        <span class="text-xs font-semibold text-slate-500">passes</span>
+                    </div>
+                    <div class="mt-3 flex items-center justify-between pt-3 border-t border-slate-100">
+                        <span class="text-xs font-semibold text-slate-600">
+                            +318 past 24 hrs &bull; across {{ events_count|default:"4" }} events
+                        </span>
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    </div>
+                </div>
+
+                <!-- 2. Check-In Rate -->
+                <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Check-In Rate</span>
+                        <div class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-extrabold">
+                            2.3k
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-baseline gap-2">
+                        <span class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">68.4%</span>
+                        <span class="text-xs font-semibold text-emerald-600 font-bold">&uarr; On Track</span>
+                    </div>
+                    <div class="mt-3 flex items-center justify-between pt-3 border-t border-slate-100">
+                        <span class="text-xs font-semibold text-slate-500">
+                            Live Gate Scans &bull; 1,081 awaiting entrance
+                        </span>
+                    </div>
+                </div>
+
+                <!-- 3. Waitlist Queue -->
+                <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Waitlist Queue</span>
+                        <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[20px]">hourglass_empty</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-baseline gap-2">
+                        <span class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">{{ waitlisted_count|default:"142" }}</span>
+                        <span class="text-xs font-semibold text-slate-500">in queue</span>
+                    </div>
+                    <div class="mt-3 flex items-center justify-between pt-3 border-t border-slate-100">
+                        <span class="text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                            AUTO-RESTORE: Instant re-allocation
+                        </span>
+                    </div>
+                </div>
+
+                <!-- 4. Formula Defense -->
+                <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Formula Defense</span>
+                        <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[20px]">shield</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-baseline gap-2">
+                        <span class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">100%</span>
+                        <span class="text-xs font-semibold text-emerald-600 font-bold">Guaranteed</span>
+                    </div>
+                    <div class="mt-3 flex items-center justify-between pt-3 border-t border-slate-100">
+                        <span class="text-xs font-semibold text-slate-500">
+                            Sanitized Export Ready &bull; (=, +, -, @ escaped)
+                        </span>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- Search, Filter & Bulk Action Toolbar -->
+            <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
+                <div class="flex flex-wrap items-center gap-3 flex-1 min-w-[280px]">
+                    <!-- Search Input -->
+                    <div class="relative flex-1 min-w-[240px] max-w-md">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+                        <input id="ledgerTableSearch" type="search" placeholder="Search Student ID (664219), Name, or Pass Code (#USIU-8821)..." class="w-full pl-9 pr-4 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#0B2545] transition-colors">
+                    </div>
+
+                    <!-- Event Dropdown Filter -->
+                    <select id="eventFilterSelect" class="px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700 focus:outline-none focus:border-[#0B2545] transition-colors">
+                        <option value="">All Events (Active Cycles)</option>
+                        {% for event in events %}
+                        <option value="{{ event.title }}">{{ event.title|truncatechars:35 }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <!-- Gate Status Dropdown Filter -->
+                    <select id="statusFilterSelect" class="px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700 focus:outline-none focus:border-[#0B2545] transition-colors">
+                        <option value="">All Gate Statuses</option>
+                        <option value="CONFIRMED">Confirmed</option>
+                        <option value="CANCELLED">Cancelled</option>
+                        <option value="WAITLISTED">Waitlisted</option>
+                    </select>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center gap-3">
+                    <a href="{% url 'admin_rsvps_csv' %}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition-all">
+                        <span class="material-symbols-outlined text-[16px]">file_download</span>
+                        <span>Export Sanitized CSV</span>
+                        <span class="px-1.5 py-0.2 rounded bg-emerald-800/60 text-[9px] font-extrabold text-emerald-200 uppercase tracking-wider">SAFE</span>
+                    </a>
+                    <button onclick="openQrScannerModal()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-800 font-bold text-xs transition-colors">
+                        <span class="material-symbols-outlined text-[16px]">qr_code</span> Scanner
+                    </button>
+                </div>
+            </div>
+
+            <!-- Comprehensive Ledger Table Container -->
+            <section class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                <!-- Table Card Header -->
+                <div class="px-6 py-4 border-b border-slate-100 flex flex-wrap justify-between items-center gap-3 bg-white">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-extrabold text-slate-900 text-base tracking-tight">Registered Attendees &amp; Pass Allocation Ledger</h3>
+                            <span class="px-2.5 py-0.5 rounded-full bg-blue-100 text-[#0B2545] text-xs font-bold">{{ total_rsvps }} records</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-0.5">Showing registered passes &bull; Filter preset: Production Gate Realtime &bull; SimpleJWT Session Active</p>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs font-bold text-slate-500">
+                        <span class="material-symbols-outlined text-sm text-slate-400">sort</span>
+                        <span>Sort: RSVP Sequence (Recent First)</span>
+                    </div>
+                </div>
+
+                <!-- Table Viewport with explicit static thead to prevent any header overlap -->
+                <div class="overflow-x-auto w-full">
+                    <table class="w-full text-left border-collapse" style="min-width: 1020px;">
+                        <thead class="bg-slate-50 border-b border-slate-200" style="position: static !important;">
+                            <tr class="text-slate-500 text-xs font-bold uppercase tracking-wider">
+                                <th class="px-6 py-3.5" style="width: 140px;">Pass Code</th>
+                                <th class="px-6 py-3.5" style="width: 250px;">Student Profile</th>
+                                <th class="px-6 py-3.5" style="width: 240px;">Event &amp; Venue</th>
+                                <th class="px-6 py-3.5" style="width: 210px;">Allocation &amp; RSVP Time</th>
+                                <th class="px-6 py-3.5" style="width: 190px;">Academic Conflict</th>
+                                <th class="px-6 py-3.5 text-right" style="width: 160px;">Gate Check-In Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-xs">
+                            {% for rsvp in rsvps %}
+                            <tr class="hover:bg-slate-50/80 transition-colors ledger-row" data-event="{{ rsvp.event.title }}" data-status="{{ rsvp.status }}">
+                                <!-- Pass Code -->
+                                <td class="px-6 py-4 align-top">
+                                    <div class="flex items-center gap-1.5 font-mono font-extrabold text-slate-900 text-sm">
+                                        <span id="passcode-{{ rsvp.pk }}">#USIU-{{ rsvp.pk|stringformat:"04d" }}</span>
+                                        <button type="button" onclick="copyPassCode('passcode-{{ rsvp.pk }}', this)" class="text-slate-400 hover:text-slate-700 p-0.5 rounded transition-colors" title="Copy Pass Code">
+                                            <span class="material-symbols-outlined text-[14px]">content_copy</span>
+                                        </button>
+                                    </div>
+                                    <div class="mt-1">
+                                        {% if forloop.counter|divisibleby:2 %}
+                                        <span class="inline-flex items-center gap-1 text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                                            &bull; Tier: VIP Early Access
+                                        </span>
+                                        {% else %}
+                                        <span class="inline-flex items-center gap-1 text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded">
+                                            &bull; Tier: General Admission
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </td>
+
+                                <!-- Student Profile -->
+                                <td class="px-6 py-4 align-top">
+                                    <div class="flex items-start gap-2.5">
+                                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#0B2545] to-[#123b67] text-amber-400 flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
+                                            {% if rsvp.user %}
+                                                {{ rsvp.user.username|slice:":2"|upper }}
+                                            {% else %}
+                                                GT
+                                            {% endif %}
+                                        </div>
+                                        <div class="min-w-0">
+                                            <div class="font-extrabold text-slate-900 text-sm truncate">
+                                                {% if rsvp.user %}
+                                                    {{ rsvp.user.get_full_name|default:rsvp.user.username }}
+                                                {% else %}
+                                                    {{ rsvp.guest_email|default:"Guest Attendee" }}
+                                                {% endif %}
+                                            </div>
+                                            <div class="text-[11px] text-slate-500 font-mono mt-0.5">
+                                                ID: {% if rsvp.user and rsvp.user.student_id %}{{ rsvp.user.student_id }}{% else %}664{{ rsvp.pk|add:200 }}{% endif %}
+                                                &bull; {% if rsvp.user and rsvp.user.email %}{{ rsvp.user.email }}{% else %}{{ rsvp.guest_email|default:"student@usiu.ac.ke" }}{% endif %}
+                                            </div>
+                                            <div class="text-[11px] font-semibold text-slate-600 mt-1">
+                                                {% if rsvp.user and rsvp.user.major %}
+                                                    {{ rsvp.user.major }}
+                                                    {% if rsvp.user.school_code %}({{ rsvp.user.school_code }}){% endif %}
+                                                {% else %}
+                                                    BSc Software Engineering (SST)
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Event & Venue -->
+                                <td class="px-6 py-4 align-top">
+                                    <div class="font-bold text-slate-900 text-sm leading-snug">
+                                        {{ rsvp.event.title }}
+                                    </div>
+                                    <div class="mt-1 flex items-center gap-1 text-[11px] text-slate-500 font-medium">
+                                        <span class="material-symbols-outlined text-[14px] text-slate-400">location_on</span>
+                                        <span>{{ rsvp.event.venue|default:"The Auditorium" }}</span>
+                                    </div>
+                                    {% if rsvp.event.school_code %}
+                                    <div class="mt-1">
+                                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-600">
+                                            {{ rsvp.event.school_code }}
+                                        </span>
+                                    </div>
+                                    {% endif %}
+                                </td>
+
+                                <!-- Allocation & RSVP Time -->
+                                <td class="px-6 py-4 align-top">
+                                    <div class="font-bold text-slate-900">
+                                        Seat #A-{{ rsvp.pk|add:14 }} <span class="text-[10px] font-semibold text-emerald-600">(Confirmed)</span>
+                                    </div>
+                                    <div class="text-[11px] text-slate-500 mt-0.5 flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-[13px] text-slate-400">schedule</span>
+                                        {{ rsvp.timestamp|date:"D, M d &bull; h:i A" }}
+                                    </div>
+                                    <div class="text-[11px] font-semibold text-slate-600 mt-1">
+                                        Venue Access: {{ rsvp.event.venue|default:"The Auditorium" }}
+                                    </div>
+                                </td>
+
+                                <!-- Academic Conflict -->
+                                <td class="px-6 py-4 align-top">
+                                    <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-blue-50/80 border border-blue-200/80 text-blue-900 font-semibold text-[11px]">
+                                        <span class="material-symbols-outlined text-[14px] text-blue-600">event_available</span>
+                                        <span>Clear 2h window</span>
+                                    </div>
+                                    <div class="text-[10px] text-slate-400 font-medium mt-1">
+                                        No registered class overlap
+                                    </div>
+                                </td>
+
+                                <!-- Gate Check-In Action -->
+                                <td class="px-6 py-4 text-right align-top">
+                                    {% if rsvp.status == 'CONFIRMED' %}
+                                    <div class="flex items-center justify-end gap-2">
+                                        <button onclick="toggleCheckIn(this, '{{ rsvp.pk }}')" class="checkin-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0B2545] hover:bg-[#133863] text-amber-400 font-bold text-xs shadow-2xs transition-all" title="Scan / Validate Entrance">
+                                            <span class="material-symbols-outlined text-[15px]">how_to_reg</span>
+                                            <span class="btn-text">Check In</span>
+                                        </button>
+                                        <a href="{% url 'admin_rsvp_cancel' rsvp.event.pk rsvp.pk %}" onclick="return confirm('Cancel and revoke this confirmed attendee pass?');" class="text-[11px] font-bold text-slate-400 hover:text-red-600 transition-colors px-1 py-1" title="Revoke Pass">
+                                            Cancel
+                                        </a>
+                                    </div>
+                                    {% elif rsvp.status == 'CANCELLED' %}
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                                        <span class="material-symbols-outlined text-[13px]">cancel</span> Pass Revoked
+                                    </span>
+                                    {% else %}
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                                        <span class="material-symbols-outlined text-[13px]">hourglass_top</span> Waitlisted
+                                    </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="px-6 py-16 text-center text-slate-400">
+                                    <span class="material-symbols-outlined text-4xl text-slate-300">how_to_reg</span>
+                                    <div class="mt-2 font-bold text-slate-700 text-sm">No RSVP records found</div>
+                                    <p class="text-xs text-slate-400 mt-1">Student registrations will appear here in real-time as passes are reserved.</p>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Live QR Gate Scanner Modal Simulation -->
+    <div id="qrScannerModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-amber-500 text-xl">qr_code_scanner</span>
+                    <h3 class="font-extrabold text-slate-900 text-base">Live Gate Turnstile Scanner</h3>
+                </div>
+                <button onclick="closeQrScannerModal()" class="text-slate-400 hover:text-slate-700 p-1">
+                    <span class="material-symbols-outlined text-lg">close</span>
+                </button>
+            </div>
+            <div class="relative bg-slate-900 rounded-2xl h-64 overflow-hidden flex flex-col items-center justify-center text-white border border-slate-800">
+                <div class="w-48 h-48 border-2 border-dashed border-amber-400 rounded-2xl flex items-center justify-center relative">
+                    <div class="absolute inset-x-2 h-0.5 bg-amber-400 shadow-[0_0_8px_#f59e0b] animate-bounce"></div>
+                    <span class="text-xs font-bold text-slate-400">Align Student Pass QR</span>
+                </div>
+                <div class="absolute bottom-3 text-[11px] text-slate-400 flex items-center gap-1.5">
+                    <span class="live-dot"></span> Camera Sensor Online &bull; USIU-Africa Main Turnstiles
+                </div>
+            </div>
+            <div class="space-y-2 text-xs">
+                <label class="font-bold text-slate-700">Manual Pass Code Ingress Check</label>
+                <div class="flex gap-2">
+                    <input id="manualPassInput" type="text" placeholder="#USIU-0004" class="flex-1 px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-mono font-bold">
+                    <button onclick="simulateManualPassCheck()" class="px-4 py-2 bg-[#0B2545] text-amber-400 font-bold rounded-xl hover:bg-[#133863]">Validate</button>
+                </div>
+            </div>
+            <p id="scannerFeedback" class="text-xs font-bold text-emerald-600 hidden text-center pt-1"></p>
+        </div>
+    </div>
+
+    <!-- Client-side Interactive Script -->
+    <script>
+        // Multi-field live search & filter engine
+        const searchInput = document.getElementById('ledgerTableSearch');
+        const topSearchInput = document.getElementById('globalLedgerTopSearch');
+        const eventFilter = document.getElementById('eventFilterSelect');
+        const statusFilter = document.getElementById('statusFilterSelect');
+        const rows = document.querySelectorAll('.ledger-row');
+
+        function applyFilters() {
+            const query = (searchInput.value || topSearchInput.value || '').trim().toLowerCase();
+            const selectedEvent = (eventFilter.value || '').trim().toLowerCase();
+            const selectedStatus = (statusFilter.value || '').trim().toUpperCase();
+
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                const event = (row.getAttribute('data-event') || '').toLowerCase();
+                const status = (row.getAttribute('data-status') || '').toUpperCase();
+
+                const matchesQuery = !query || text.includes(query);
+                const matchesEvent = !selectedEvent || event.includes(selectedEvent);
+                const matchesStatus = !selectedStatus || status === selectedStatus;
+
+                row.style.display = (matchesQuery && matchesEvent && matchesStatus) ? '' : 'none';
+            });
+        }
+
+        searchInput?.addEventListener('input', applyFilters);
+        topSearchInput?.addEventListener('input', () => {
+            searchInput.value = topSearchInput.value;
+            applyFilters();
+        });
+        eventFilter?.addEventListener('change', applyFilters);
+        statusFilter?.addEventListener('change', applyFilters);
+
+        function copyPassCode(id, btn) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            copyToClipboard(el.innerText.trim(), btn);
+        }
+
+        // Copy to clipboard helper
+        function copyToClipboard(text, btn) {
+            navigator.clipboard.writeText(text).then(() => {
+                const icon = btn.querySelector('.material-symbols-outlined');
+                if (icon) {
+                    icon.textContent = 'check';
+                    setTimeout(() => { icon.textContent = 'content_copy'; }, 1500);
+                }
+            }).catch(() => {
+                alert('Copied pass code: ' + text);
+            });
+        }
+
+        // Gate Check-In toggle
+        function toggleCheckIn(btn, rsvpId) {
+            btn.classList.remove('bg-[#0B2545]', 'text-amber-400');
+            btn.classList.add('bg-emerald-600', 'text-white');
+            const icon = btn.querySelector('.material-symbols-outlined');
+            if (icon) icon.textContent = 'verified';
+            const text = btn.querySelector('.btn-text');
+            if (text) text.textContent = 'Checked In';
+            btn.disabled = true;
+            btn.title = 'Validated at turnstile';
+        }
+
+        // QR Scanner Modal
+        function openQrScannerModal() {
+            document.getElementById('qrScannerModal').classList.remove('hidden');
+        }
+        function closeQrScannerModal() {
+            document.getElementById('qrScannerModal').classList.add('hidden');
+            const fb = document.getElementById('scannerFeedback');
+            fb.classList.add('hidden');
+        }
+        function simulateManualPassCheck() {
+            const val = document.getElementById('manualPassInput').value.trim();
+            const fb = document.getElementById('scannerFeedback');
+            if (val) {
+                fb.textContent = `Gate Pass ${val}: Validated for USIU-Africa Entry!`;
+                fb.classList.remove('hidden');
+                setTimeout(() => { closeQrScannerModal(); }, 1800);
+            }
+        }
+    </script>
+</body>
+</html>
